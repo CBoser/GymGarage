@@ -22,8 +22,6 @@
   --muted: #94908a;
   --green: #22c55e;
   --green-bg: #f0fdf4;
-  --son-blue: #2563eb;
-  --son-bg: #eff6ff;
   --yellow: #eab308;
   --radius: 16px;
   --font: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
@@ -353,7 +351,6 @@ body {
 .sets-head .sh-wt { flex: 1; }
 .sets-head .sh-chk { width: 48px; }
 .sets-head .corey { color: var(--accent); }
-.sets-head .son { color: var(--son-blue); }
 
 .set-row {
   display: flex;
@@ -383,7 +380,6 @@ body {
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 .sr-input.corey { background: var(--accent-light); }
-.sr-input.son { background: var(--son-bg); }
 .sr-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(199,91,18,0.12); }
 
 .sr-chk {
@@ -682,7 +678,7 @@ body {
    ======================================== */
 var WORKOUTS = {
   A: { name: "Day A", sub: "Squat + Bench", focus: "Lower Body + Horizontal Push", exs: [
-    { n: "Barbell Back Squat", s: 4, r: "8", rest: 150, cue: "Chest up, knees track toes, hip crease below knee", alt: "Son: Goblet squat if form needs work" },
+    { n: "Barbell Back Squat", s: 4, r: "8", rest: 150, cue: "Chest up, knees track toes, hip crease below knee", alt: "" },
     { n: "DB Bench Press", s: 4, r: "8", rest: 120, cue: "Retract shoulder blades, control the negative", alt: "" },
     { n: "DB Row", s: 3, r: "10", rest: 90, cue: "Pull elbow to hip, don\u2019t rotate torso", alt: "" },
     { n: "EZ Bar Curl", s: 3, r: "10", rest: 90, cue: "Slow negative (3 sec down)", alt: "" },
@@ -834,8 +830,8 @@ function renderWorkoutTab() {
   h += '<div class="card card-side">';
   h += '<div class="how-box">';
   h += '<div class="how-title">How It Works</div>';
-  h += '<div class="how-text">You and your son alternate sets on each exercise. His set is your rest.</div>';
-  h += '<div class="how-arrow">Corey \u2192 Son \u2192 Corey \u2192 Son</div>';
+  h += '<div class="how-text">Complete all sets for each exercise before moving to the next. Rest between sets.</div>';
+  h += '<div class="how-arrow">Set \u2192 Rest \u2192 Set \u2192 Rest</div>';
   h += '<div class="how-divider"></div>';
   h += '<div class="how-title" style="font-size:12px">Progression</div>';
   h += '<div class="how-small"><strong>Barbell:</strong> +5 lbs when all sets complete</div>';
@@ -953,9 +949,7 @@ function startWorkout(key) {
     h += '<div class="sets-grid">';
     h += '<div class="sets-head">';
     h += '<div class="sh-set">Set</div>';
-    h += '<div class="sh-wt corey">Corey</div>';
-    h += '<div class="sh-chk"></div>';
-    h += '<div class="sh-wt son">Son</div>';
+    h += '<div class="sh-wt corey">Weight</div>';
     h += '<div class="sh-chk"></div>';
     h += '</div>';
 
@@ -964,8 +958,6 @@ function startWorkout(key) {
       h += '<div class="sr-num">' + (si+1) + '</div>';
       h += '<input class="sr-input corey" id="cw-' + ei + '-' + si + '" placeholder="\u2014" inputmode="numeric">';
       h += '<button class="sr-chk" id="cd-' + ei + '-' + si + '" onclick="toggleCheck(\'' + key + '\',' + ei + ',' + si + ',\'cd\')">\u2713</button>';
-      h += '<input class="sr-input son" id="sw-' + ei + '-' + si + '" placeholder="\u2014" inputmode="numeric">';
-      h += '<button class="sr-chk" id="sd-' + ei + '-' + si + '" onclick="toggleCheck(\'' + key + '\',' + ei + ',' + si + ',\'sd\')">\u2713</button>';
       h += '</div>';
     }
     h += '</div></div>';
@@ -1020,8 +1012,7 @@ function toggleCheck(dayKey, ei, si, prefix) {
   var allDone = true;
   for (var s = 0; s < ex.s; s++) {
     var cd = document.getElementById('cd-' + ei + '-' + s);
-    var sd = document.getElementById('sd-' + ei + '-' + s);
-    if (!cd.classList.contains('checked') || !sd.classList.contains('checked')) {
+    if (!cd.classList.contains('checked')) {
       allDone = false;
       break;
     }
@@ -1091,10 +1082,8 @@ function saveWorkout(dayKey) {
     var sets = [];
     for (var si = 0; si < ex.s; si++) {
       var cwEl = document.getElementById('cw-' + ei + '-' + si);
-      var swEl = document.getElementById('sw-' + ei + '-' + si);
       sets.push({
-        corey: cwEl ? cwEl.value : '',
-        son: swEl ? swEl.value : ''
+        weight: cwEl ? cwEl.value : ''
       });
     }
     data.push({ exercise: ex.n, sets: sets });
