@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Garage Gym">
+<meta name="theme-color" content="#C75B12">
+<link rel="manifest" href="manifest.json">
+<title>Boser Garage Gym</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap');
+
+:root {
+  --accent: #C75B12;
+  --accent-light: #fff7ed;
+  --dark: #1a1a1a;
+  --bg: #f4f2ef;
+  --card: #ffffff;
+  --border: #e8e5e0;
+  --muted: #94908a;
+  --green: #22c55e;
+  --green-bg: #f0fdf4;
+  --son-blue: #2563eb;
+  --son-bg: #eff6ff;
+  --yellow: #eab308;
+  --radius: 16px;
+  --font: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; }
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--dark);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ======= LAYOUT ======= */
+.app {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 20px 24px 40px;
+  min-height: 100vh;
+}
+
+/* ======= HOME VIEW ======= */
+.home-header {
+  text-align: center;
+  padding: 16px 0 24px;
+}
+.home-title {
+  font-size: 32px;
+  font-weight: 900;
+  letter-spacing: -0.5px;
+  color: var(--dark);
+}
+.home-sub {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--accent);
+  margin-top: 4px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+.home-meta {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 8px;
+}
+.divider {
+  width: 60px;
+  height: 3px;
+  background: var(--accent);
+  border-radius: 2px;
+  margin: 16px auto 0;
+}
+
+/* Nav tabs */
+.nav-tabs {
+  display: flex;
+  gap: 4px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 4px;
+  margin-bottom: 24px;
+}
+.nav-tab {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  font-family: var(--font);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.nav-tab.active {
+  background: var(--dark);
+  color: white;
+}
+
+/* Day selector buttons */
+.day-grid {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 28px;
+}
+.day-card {
+  flex: 1;
+  padding: 28px 12px 24px;
+  border-radius: var(--radius);
+  border: 2px solid var(--border);
+  background: var(--card);
+  cursor: pointer;
+  text-align: center;
+  font-family: var(--font);
+  -webkit-appearance: none;
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+.day-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--accent);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.day-card:active {
+  transform: scale(0.97);
+  border-color: var(--accent);
+}
+.day-card:active::before { opacity: 1; }
+.day-name { font-size: 26px; font-weight: 900; letter-spacing: -0.5px; }
+.day-sub { font-size: 13px; font-weight: 700; color: var(--accent); margin-top: 6px; }
+.day-count { font-size: 11px; color: var(--muted); margin-top: 12px; }
+.day-last { font-size: 10px; color: var(--muted); margin-top: 4px; opacity: 0.7; }
+
+/* Schedule + info cards */
+.info-row {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+}
+.card-full { flex: 1; }
+.card-side { flex: 0 0 280px; }
+.card-title {
+  font-size: 16px;
+  font-weight: 800;
+  margin-bottom: 16px;
+  letter-spacing: -0.3px;
+}
+.wk-row { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 14px; }
+.wk-row:last-child { margin-bottom: 0; }
+.wk-badge {
+  background: var(--accent);
+  color: white;
+  border-radius: 50%;
+  min-width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.wk-pills { display: flex; gap: 6px; margin-bottom: 4px; }
+.wk-pill {
+  background: var(--bg);
+  color: var(--dark);
+  padding: 3px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-family: var(--mono);
+  font-weight: 700;
+}
+.wk-note { font-size: 12px; color: var(--muted); margin-top: 4px; line-height: 1.4; }
+
+.how-box {
+  background: var(--bg);
+  border-radius: var(--radius);
+  padding: 20px;
+  text-align: center;
+}
+.how-title { font-size: 14px; font-weight: 800; color: var(--dark); margin-bottom: 10px; }
+.how-text { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 8px; }
+.how-arrow { font-size: 13px; color: var(--accent); font-weight: 700; font-family: var(--mono); }
+.how-divider { width: 100%; height: 1px; background: var(--border); margin: 14px 0; }
+.how-small { font-size: 11px; color: var(--muted); line-height: 1.5; }
+
+/* ======= WORKOUT VIEW ======= */
+.wo-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+.back-btn {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font);
+  padding: 8px 0;
+}
+.back-btn:active { color: var(--accent); }
+.wo-timer-global {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.wo-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+.wo-name { font-size: 28px; font-weight: 900; letter-spacing: -0.5px; }
+.wo-sub { font-size: 14px; font-weight: 700; color: var(--accent); margin-top: 4px; text-transform: uppercase; letter-spacing: 1.5px; }
+
+.section-bar {
+  text-align: center;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: var(--bg);
+  margin-bottom: 18px;
+}
+.section-label {
+  font-size: 10px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-weight: 700;
+}
+.section-text { font-size: 14px; color: var(--dark); margin-top: 4px; font-weight: 500; }
+
+/* Exercise cards */
+.ex-card {
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 14px;
+  background: var(--card);
+  overflow: hidden;
+  transition: border-color 0.3s, background 0.3s;
+}
+.ex-card.complete {
+  border-color: var(--green);
+  background: var(--green-bg);
+}
+.ex-top {
+  padding: 14px 18px 10px;
+}
+.ex-row1 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.ex-id {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.ex-num {
+  background: var(--accent);
+  color: white;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+.ex-name { font-size: 17px; font-weight: 800; letter-spacing: -0.3px; }
+
+.rest-btn {
+  padding: 7px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: var(--mono);
+  border: none;
+  cursor: pointer;
+  background: var(--bg);
+  color: var(--muted);
+  -webkit-appearance: none;
+  transition: all 0.2s;
+}
+.rest-btn:active { transform: scale(0.94); }
+.rest-btn.active { background: var(--yellow); color: white; }
+.rest-btn.go { background: var(--green); color: white; animation: pulse 0.5s ease-in-out 3; }
+@keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.08)} }
+
+.ex-info { font-size: 13px; color: var(--muted); margin-left: 38px; margin-top: 4px; }
+.ex-alt { font-size: 12px; color: var(--accent); margin-left: 38px; margin-top: 4px; font-weight: 600; }
+.cue-toggle {
+  font-size: 12px;
+  color: #bbb;
+  margin-left: 38px;
+  margin-top: 6px;
+  cursor: pointer;
+  padding: 4px 0;
+  font-weight: 600;
+}
+.cue-text {
+  font-size: 12px;
+  color: var(--muted);
+  font-style: italic;
+  margin-left: 38px;
+  margin-top: 4px;
+  line-height: 1.4;
+  padding-bottom: 4px;
+}
+
+/* Set tracking grid */
+.sets-grid { padding: 6px 18px 16px; }
+.sets-head {
+  display: flex;
+  gap: 8px;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--muted);
+  margin-bottom: 8px;
+  padding: 0 2px;
+}
+.sets-head .sh-set { width: 40px; }
+.sets-head .sh-wt { flex: 1; }
+.sets-head .sh-chk { width: 48px; }
+.sets-head .corey { color: var(--accent); }
+.sets-head .son { color: var(--son-blue); }
+
+.set-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 6px;
+  padding: 0 2px;
+}
+.sr-num {
+  width: 40px;
+  text-align: center;
+  font-size: 15px;
+  font-family: var(--mono);
+  font-weight: 700;
+  color: #ccc;
+}
+.sr-input {
+  flex: 1;
+  font-size: 17px;
+  font-family: var(--mono);
+  text-align: center;
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 4px;
+  outline: none;
+  -webkit-appearance: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.sr-input.corey { background: var(--accent-light); }
+.sr-input.son { background: var(--son-bg); }
+.sr-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(199,91,18,0.12); }
+
+.sr-chk {
+  width: 48px;
+  height: 44px;
+  border-radius: 10px;
+  border: 2px solid var(--border);
+  font-size: 22px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--card);
+  color: #ddd;
+  -webkit-appearance: none;
+  transition: all 0.15s;
+}
+.sr-chk:active { transform: scale(0.9); }
+.sr-chk.checked { background: var(--green); color: white; border-color: var(--green); }
+
+/* Notes and footer */
+.notes-section { margin-top: 18px; }
+.notes-label { font-size: 13px; font-weight: 700; color: var(--muted); margin-bottom: 8px; }
+.notes-input {
+  width: 100%;
+  min-height: 80px;
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 14px;
+  font-size: 15px;
+  font-family: var(--font);
+  outline: none;
+  resize: vertical;
+  -webkit-appearance: none;
+  transition: border-color 0.2s;
+}
+.notes-input:focus { border-color: var(--accent); }
+
+.save-bar {
+  margin-top: 20px;
+  display: flex;
+  gap: 12px;
+}
+.save-btn {
+  flex: 1;
+  padding: 16px;
+  border-radius: 12px;
+  border: none;
+  font-family: var(--font);
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  -webkit-appearance: none;
+  transition: all 0.15s;
+}
+.save-btn:active { transform: scale(0.97); }
+.save-btn.primary { background: var(--accent); color: white; }
+.save-btn.secondary { background: var(--bg); color: var(--muted); border: 1px solid var(--border); }
+
+.prog-box {
+  margin-top: 18px;
+  padding: 16px 18px;
+  border-radius: 12px;
+  background: var(--bg);
+}
+.prog-title { font-size: 12px; font-weight: 800; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+.prog-text { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+/* ======= HISTORY VIEW ======= */
+.hist-empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--muted);
+}
+.hist-empty-icon { font-size: 48px; margin-bottom: 16px; opacity: 0.3; }
+.hist-empty-text { font-size: 15px; }
+
+.hist-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.hist-left {}
+.hist-day { font-size: 16px; font-weight: 800; }
+.hist-date { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.hist-right { text-align: right; }
+.hist-stat { font-size: 12px; color: var(--muted); }
+.hist-del {
+  font-size: 11px;
+  color: #ddd;
+  cursor: pointer;
+  margin-top: 4px;
+}
+.hist-del:active { color: red; }
+
+.hidden { display: none; }
+</style>
+</head>
+<body>
+<div class="app" id="app"></div>
+
+<script>
+/* ========================================
+   DATA
+   ======================================== */
+var WORKOUTS = {
+  A: { name: "Day A", sub: "Squat + Bench", focus: "Lower Body + Horizontal Push", exs: [
+    { n: "Barbell Back Squat", s: 4, r: "8", rest: 150, cue: "Chest up, knees track toes, hip crease below knee", alt: "Son: Goblet squat if form needs work" },
+    { n: "DB Bench Press", s: 4, r: "8", rest: 120, cue: "Retract shoulder blades, control the negative", alt: "" },
+    { n: "DB Row", s: 3, r: "10", rest: 90, cue: "Pull elbow to hip, don\u2019t rotate torso", alt: "" },
+    { n: "EZ Bar Curl", s: 3, r: "10", rest: 90, cue: "Slow negative (3 sec down)", alt: "" },
+    { n: "Ab Wheel Rollout", s: 3, r: "8\u201312", rest: 60, cue: "Squeeze abs, don\u2019t let hips sag", alt: "" }
+  ]},
+  B: { name: "Day B", sub: "Hinge + OHP", focus: "Posterior Chain + Vertical Push", exs: [
+    { n: "Romanian Deadlift", s: 4, r: "8", rest: 150, cue: "Soft knees, hinge at hips, feel hamstrings", alt: "" },
+    { n: "DB Overhead Press", s: 4, r: "8", rest: 120, cue: "Press slightly forward, lock out overhead", alt: "" },
+    { n: "Lat Pulldown", s: 3, r: "10", rest: 90, cue: "Lead with elbows, squeeze lats at bottom", alt: "" },
+    { n: "Leg Ext / Curl SS", s: 3, r: "10 ea", rest: 60, cue: "Full ROM, pause at peak contraction", alt: "" },
+    { n: "Plank Hold", s: 3, r: "30\u201345s", rest: 60, cue: "Squeeze glutes, body in straight line", alt: "" }
+  ]},
+  C: { name: "Day C", sub: "Deadlift + Pull", focus: "Full Body + Back Volume", exs: [
+    { n: "Conventional Deadlift", s: 4, r: "5", rest: 180, cue: "Brace core, push floor away, lockout hips", alt: "" },
+    { n: "Incline DB Press", s: 3, r: "10", rest: 120, cue: "Elbows at 45\u00B0, not flared wide", alt: "" },
+    { n: "Lat Pulldown (close)", s: 3, r: "10", rest: 90, cue: "Lean back slightly, pull to sternum", alt: "" },
+    { n: "DB Lateral Raise", s: 3, r: "12", rest: 60, cue: "Raise to shoulder height, pour water motion", alt: "" },
+    { n: "Hanging Knee Raise", s: 3, r: "10\u201312", rest: 60, cue: "Curl pelvis up, don\u2019t just swing", alt: "" }
+  ]}
+};
+
+var WEEKS = [
+  "Learn the lifts. Light weight, perfect form.",
+  "Same or small increases. Dial in rest times.",
+  "Push intensity where form is solid.",
+  "Test session \u2014 find your working weights."
+];
+
+/* ========================================
+   STATE & STORAGE
+   ======================================== */
+var timers = {};
+var sessionStart = null;
+var globalTimer = null;
+
+function loadHistory() {
+  try { return JSON.parse(localStorage.getItem('bgym_history') || '[]'); }
+  catch(e) { return []; }
+}
+function saveHistory(h) {
+  try { localStorage.setItem('bgym_history', JSON.stringify(h)); } catch(e) {}
+}
+function getLastDate(key) {
+  var hist = loadHistory();
+  for (var i = hist.length - 1; i >= 0; i--) {
+    if (hist[i].day === key) return hist[i].date;
+  }
+  return null;
+}
+
+function fmt(sec) {
+  var m = Math.floor(sec / 60);
+  var s = sec % 60;
+  return m + ":" + (s < 10 ? "0" : "") + s;
+}
+
+function fmtElapsed(sec) {
+  var m = Math.floor(sec / 60);
+  var s = sec % 60;
+  return m + "m " + (s < 10 ? "0" : "") + s + "s";
+}
+
+function dateStr(d) {
+  var days = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+  var months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  return days[d.getDay()] + ", " + months[d.getMonth()] + " " + d.getDate();
+}
+
+/* ========================================
+   HOME VIEW
+   ======================================== */
+var currentTab = 'workout';
+
+function showHome() {
+  clearAllTimers();
+  currentTab = 'workout';
+  renderHome();
+}
+
+function renderHome() {
+  var h = '';
+
+  // Header
+  h += '<div class="home-header">';
+  h += '<div class="home-title">Boser Garage Gym</div>';
+  h += '<div class="home-sub">Strength Foundation</div>';
+  h += '<div class="home-meta">Tuesday &bull; Thursday &bull; Saturday &bull; 30\u201345 min</div>';
+  h += '<div class="divider"></div>';
+  h += '</div>';
+
+  // Nav tabs
+  h += '<div class="nav-tabs">';
+  h += '<button class="nav-tab ' + (currentTab === 'workout' ? 'active' : '') + '" onclick="switchTab(\'workout\')">Workouts</button>';
+  h += '<button class="nav-tab ' + (currentTab === 'history' ? 'active' : '') + '" onclick="switchTab(\'history\')">History</button>';
+  h += '<button class="nav-tab ' + (currentTab === 'program' ? 'active' : '') + '" onclick="switchTab(\'program\')">Program</button>';
+  h += '</div>';
+
+  if (currentTab === 'workout') {
+    h += renderWorkoutTab();
+  } else if (currentTab === 'history') {
+    h += renderHistoryTab();
+  } else {
+    h += renderProgramTab();
+  }
+
+  document.getElementById('app').innerHTML = h;
+}
+
+function switchTab(tab) {
+  currentTab = tab;
+  renderHome();
+}
+
+function renderWorkoutTab() {
+  var h = '';
+  // Day cards
+  h += '<div class="day-grid">';
+  ["A","B","C"].forEach(function(k) {
+    var w = WORKOUTS[k];
+    var last = getLastDate(k);
+    var lastStr = last ? 'Last: ' + last : 'Not yet started';
+    h += '<button class="day-card" onclick="startWorkout(\'' + k + '\')">';
+    h += '<div class="day-name">' + w.name + '</div>';
+    h += '<div class="day-sub">' + w.sub + '</div>';
+    h += '<div class="day-count">' + w.exs.length + ' exercises</div>';
+    h += '<div class="day-last">' + lastStr + '</div>';
+    h += '</button>';
+  });
+  h += '</div>';
+
+  // Schedule + How it works
+  h += '<div class="info-row">';
+  h += '<div class="card card-full">';
+  h += '<div class="card-title">4-Week Schedule</div>';
+  WEEKS.forEach(function(note, i) {
+    h += '<div class="wk-row">';
+    h += '<span class="wk-badge">W' + (i+1) + '</span>';
+    h += '<div>';
+    h += '<div class="wk-pills">';
+    h += '<span class="wk-pill">Tue: A</span>';
+    h += '<span class="wk-pill">Thu: B</span>';
+    h += '<span class="wk-pill">Sat: C</span>';
+    h += '</div>';
+    h += '<div class="wk-note">' + note + '</div>';
+    h += '</div></div>';
+  });
+  h += '</div>';
+
+  h += '<div class="card card-side">';
+  h += '<div class="how-box">';
+  h += '<div class="how-title">How It Works</div>';
+  h += '<div class="how-text">You and your son alternate sets on each exercise. His set is your rest.</div>';
+  h += '<div class="how-arrow">Corey \u2192 Son \u2192 Corey \u2192 Son</div>';
+  h += '<div class="how-divider"></div>';
+  h += '<div class="how-title" style="font-size:12px">Progression</div>';
+  h += '<div class="how-small"><strong>Barbell:</strong> +5 lbs when all sets complete</div>';
+  h += '<div class="how-small"><strong>Dumbbell:</strong> +2.5\u20135 lbs per hand</div>';
+  h += '<div class="how-small"><strong>Failed twice?</strong> Drop 10%, rebuild</div>';
+  h += '</div></div>';
+
+  h += '</div>';
+  return h;
+}
+
+function renderHistoryTab() {
+  var hist = loadHistory();
+  if (hist.length === 0) {
+    return '<div class="hist-empty"><div class="hist-empty-icon">\uD83C\uDFCB\uFE0F</div><div class="hist-empty-text">No workouts saved yet.<br>Complete a session to see it here.</div></div>';
+  }
+  var h = '';
+  for (var i = hist.length - 1; i >= 0; i--) {
+    var entry = hist[i];
+    var w = WORKOUTS[entry.day];
+    h += '<div class="hist-card">';
+    h += '<div class="hist-left">';
+    h += '<div class="hist-day">' + w.name + ' \u2014 ' + w.sub + '</div>';
+    h += '<div class="hist-date">' + entry.date + (entry.duration ? ' &bull; ' + entry.duration : '') + '</div>';
+    h += '</div>';
+    h += '<div class="hist-right">';
+    if (entry.notes) h += '<div class="hist-stat" style="max-width:200px;text-align:right">' + entry.notes.substring(0, 60) + (entry.notes.length > 60 ? '...' : '') + '</div>';
+    h += '<div class="hist-del" onclick="deleteEntry(' + i + ')">delete</div>';
+    h += '</div>';
+    h += '</div>';
+  }
+  return h;
+}
+
+function renderProgramTab() {
+  var h = '';
+  ["A","B","C"].forEach(function(k) {
+    var w = WORKOUTS[k];
+    h += '<div class="card" style="margin-bottom:14px">';
+    h += '<div class="card-title" style="color:var(--accent)">' + w.name + ' \u2014 ' + w.sub + '</div>';
+    h += '<div style="font-size:13px;color:var(--muted);margin-bottom:12px">' + w.focus + '</div>';
+    w.exs.forEach(function(ex, i) {
+      h += '<div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:10px">';
+      h += '<span style="background:var(--accent);color:white;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:1px">' + (i+1) + '</span>';
+      h += '<div>';
+      h += '<div style="font-size:14px;font-weight:700">' + ex.n + '</div>';
+      h += '<div style="font-size:12px;color:var(--muted)">' + ex.s + 'x' + ex.r + ' &bull; Rest ' + fmt(ex.rest) + '</div>';
+      h += '<div style="font-size:11px;color:var(--muted);font-style:italic;margin-top:2px">' + ex.cue + '</div>';
+      if (ex.alt) h += '<div style="font-size:11px;color:var(--accent);margin-top:2px">' + ex.alt + '</div>';
+      h += '</div></div>';
+    });
+    h += '</div>';
+  });
+  return h;
+}
+
+function deleteEntry(idx) {
+  if (!confirm('Delete this workout entry?')) return;
+  var hist = loadHistory();
+  hist.splice(idx, 1);
+  saveHistory(hist);
+  renderHome();
+}
+
+/* ========================================
+   WORKOUT VIEW
+   ======================================== */
+function clearAllTimers() {
+  Object.keys(timers).forEach(function(k) {
+    if (timers[k]) clearInterval(timers[k]);
+  });
+  timers = {};
+  if (globalTimer) clearInterval(globalTimer);
+  globalTimer = null;
+}
+
+function startWorkout(key) {
+  clearAllTimers();
+  sessionStart = Date.now();
+  var w = WORKOUTS[key];
+  var h = '';
+
+  // Top bar
+  h += '<div class="wo-bar">';
+  h += '<button class="back-btn" onclick="showHome()">\u2190 Back</button>';
+  h += '<div class="wo-timer-global" id="global-timer">0:00</div>';
+  h += '</div>';
+
+  // Header
+  h += '<div class="wo-header">';
+  h += '<div class="wo-name">' + w.name + '</div>';
+  h += '<div class="wo-sub">' + w.sub + '</div>';
+  h += '</div>';
+
+  // Warmup
+  h += '<div class="section-bar"><div class="section-label">Warmup</div><div class="section-text">5 min treadmill jog</div></div>';
+
+  // Exercises
+  w.exs.forEach(function(ex, ei) {
+    h += '<div class="ex-card" id="ex-' + ei + '">';
+    h += '<div class="ex-top">';
+    h += '<div class="ex-row1">';
+    h += '<div class="ex-id"><span class="ex-num">' + (ei+1) + '</span><span class="ex-name">' + ex.n + '</span></div>';
+    h += '<button class="rest-btn" id="rest-' + ei + '" onclick="toggleTimer(' + ei + ',' + ex.rest + ')">Rest ' + fmt(ex.rest) + '</button>';
+    h += '</div>';
+    h += '<div class="ex-info">' + ex.s + ' sets \u00D7 ' + ex.r + ' reps</div>';
+    if (ex.alt) h += '<div class="ex-alt">' + ex.alt + '</div>';
+    h += '<div class="cue-toggle" onclick="toggleCue(' + ei + ')" id="cue-toggle-' + ei + '">\u25B6 Form cue</div>';
+    h += '<div class="cue-text hidden" id="cue-' + ei + '">' + ex.cue + '</div>';
+    h += '</div>';
+
+    h += '<div class="sets-grid">';
+    h += '<div class="sets-head">';
+    h += '<div class="sh-set">Set</div>';
+    h += '<div class="sh-wt corey">Corey</div>';
+    h += '<div class="sh-chk"></div>';
+    h += '<div class="sh-wt son">Son</div>';
+    h += '<div class="sh-chk"></div>';
+    h += '</div>';
+
+    for (var si = 0; si < ex.s; si++) {
+      h += '<div class="set-row">';
+      h += '<div class="sr-num">' + (si+1) + '</div>';
+      h += '<input class="sr-input corey" id="cw-' + ei + '-' + si + '" placeholder="\u2014" inputmode="numeric">';
+      h += '<button class="sr-chk" id="cd-' + ei + '-' + si + '" onclick="toggleCheck(\'' + key + '\',' + ei + ',' + si + ',\'cd\')">\u2713</button>';
+      h += '<input class="sr-input son" id="sw-' + ei + '-' + si + '" placeholder="\u2014" inputmode="numeric">';
+      h += '<button class="sr-chk" id="sd-' + ei + '-' + si + '" onclick="toggleCheck(\'' + key + '\',' + ei + ',' + si + ',\'sd\')">\u2713</button>';
+      h += '</div>';
+    }
+    h += '</div></div>';
+  });
+
+  // Cooldown
+  h += '<div class="section-bar" style="margin-top:18px"><div class="section-label">Cooldown</div><div class="section-text">5\u201310 min stretching</div></div>';
+
+  // Notes
+  h += '<div class="notes-section">';
+  h += '<div class="notes-label">Session Notes</div>';
+  h += '<textarea class="notes-input" id="session-notes" placeholder="How did it feel? Weight changes? Form cues to remember?"></textarea>';
+  h += '</div>';
+
+  // Save bar
+  h += '<div class="save-bar">';
+  h += '<button class="save-btn secondary" onclick="showHome()">Discard</button>';
+  h += '<button class="save-btn primary" onclick="saveWorkout(\'' + key + '\')">Save Session \u2713</button>';
+  h += '</div>';
+
+  // Progression reference
+  h += '<div class="prog-box">';
+  h += '<div class="prog-title">Progression</div>';
+  h += '<div class="prog-text"><strong>Barbell:</strong> +5 lbs when all sets complete &bull; <strong>DB:</strong> +2.5\u20135 lbs per hand &bull; <strong>Failed twice?</strong> Drop 10% and rebuild.</div>';
+  h += '</div>';
+
+  document.getElementById('app').innerHTML = h;
+  window.scrollTo(0, 0);
+
+  // Start global session timer
+  globalTimer = setInterval(function() {
+    var el = document.getElementById('global-timer');
+    if (el) {
+      var elapsed = Math.floor((Date.now() - sessionStart) / 1000);
+      el.textContent = fmtElapsed(elapsed);
+    }
+  }, 1000);
+}
+
+function toggleCheck(dayKey, ei, si, prefix) {
+  var id = prefix + '-' + ei + '-' + si;
+  var el = document.getElementById(id);
+  if (el.classList.contains('checked')) {
+    el.classList.remove('checked');
+  } else {
+    el.classList.add('checked');
+  }
+  // Check if entire exercise is done
+  var w = WORKOUTS[dayKey];
+  var ex = w.exs[ei];
+  var allDone = true;
+  for (var s = 0; s < ex.s; s++) {
+    var cd = document.getElementById('cd-' + ei + '-' + s);
+    var sd = document.getElementById('sd-' + ei + '-' + s);
+    if (!cd.classList.contains('checked') || !sd.classList.contains('checked')) {
+      allDone = false;
+      break;
+    }
+  }
+  var card = document.getElementById('ex-' + ei);
+  if (allDone) {
+    card.classList.add('complete');
+  } else {
+    card.classList.remove('complete');
+  }
+}
+
+function toggleCue(ei) {
+  var cue = document.getElementById('cue-' + ei);
+  var toggle = document.getElementById('cue-toggle-' + ei);
+  if (cue.classList.contains('hidden')) {
+    cue.classList.remove('hidden');
+    toggle.innerHTML = '\u25BC Form cue';
+  } else {
+    cue.classList.add('hidden');
+    toggle.innerHTML = '\u25B6 Form cue';
+  }
+}
+
+function toggleTimer(ei, totalSec) {
+  var btn = document.getElementById('rest-' + ei);
+  if (timers[ei]) {
+    clearInterval(timers[ei]);
+    timers[ei] = null;
+    btn.className = 'rest-btn';
+    btn.textContent = 'Rest ' + fmt(totalSec);
+    return;
+  }
+  var left = totalSec;
+  btn.className = 'rest-btn active';
+  btn.textContent = '\u23F1 ' + fmt(left);
+  timers[ei] = setInterval(function() {
+    left--;
+    if (left <= 0) {
+      clearInterval(timers[ei]);
+      timers[ei] = null;
+      btn.className = 'rest-btn go';
+      btn.textContent = 'GO!';
+      setTimeout(function() {
+        if (!timers[ei]) {
+          btn.className = 'rest-btn';
+          btn.textContent = 'Rest ' + fmt(totalSec);
+        }
+      }, 4000);
+    } else {
+      if (left <= 5) btn.className = 'rest-btn go';
+      btn.textContent = '\u23F1 ' + fmt(left);
+    }
+  }, 1000);
+}
+
+function saveWorkout(dayKey) {
+  var w = WORKOUTS[dayKey];
+  var elapsed = sessionStart ? Math.floor((Date.now() - sessionStart) / 1000) : 0;
+  var notes = '';
+  var notesEl = document.getElementById('session-notes');
+  if (notesEl) notes = notesEl.value;
+
+  // Collect weight data
+  var data = [];
+  w.exs.forEach(function(ex, ei) {
+    var sets = [];
+    for (var si = 0; si < ex.s; si++) {
+      var cwEl = document.getElementById('cw-' + ei + '-' + si);
+      var swEl = document.getElementById('sw-' + ei + '-' + si);
+      sets.push({
+        corey: cwEl ? cwEl.value : '',
+        son: swEl ? swEl.value : ''
+      });
+    }
+    data.push({ exercise: ex.n, sets: sets });
+  });
+
+  var entry = {
+    day: dayKey,
+    date: dateStr(new Date()),
+    duration: fmtElapsed(elapsed),
+    notes: notes,
+    data: data,
+    timestamp: Date.now()
+  };
+
+  var hist = loadHistory();
+  hist.push(entry);
+  saveHistory(hist);
+
+  clearAllTimers();
+  currentTab = 'history';
+  renderHome();
+}
+
+/* ========================================
+   SERVICE WORKER
+   ======================================== */
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').catch(function() {});
+}
+
+/* ========================================
+   INIT
+   ======================================== */
+showHome();
+</script>
+</body>
+</html>
