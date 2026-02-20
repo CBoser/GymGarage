@@ -7,7 +7,11 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Garage Gym">
 <meta name="theme-color" content="#C75B12">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="application-name" content="Garage Gym">
 <link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <title>Boser Garage Gym</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap');
@@ -90,12 +94,12 @@ body {
 }
 .nav-tab {
   flex: 1;
-  padding: 10px;
+  padding: 10px 6px;
   border: none;
   border-radius: 8px;
   background: transparent;
   font-family: var(--font);
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   color: var(--muted);
   cursor: pointer;
@@ -480,6 +484,259 @@ body {
 }
 .hist-del:active { color: red; }
 
+/* ======= SYNC / DATA TRANSFER ======= */
+.sync-section {
+  text-align: center;
+  padding: 20px 0;
+}
+.sync-title {
+  font-size: 18px;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+.sync-desc {
+  font-size: 14px;
+  color: var(--muted);
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+.sync-btns {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+.sync-btn {
+  padding: 14px 28px;
+  border-radius: 12px;
+  border: 2px solid var(--border);
+  background: var(--card);
+  font-family: var(--font);
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  -webkit-appearance: none;
+  transition: all 0.15s;
+}
+.sync-btn:active { transform: scale(0.96); }
+.sync-btn.export { background: var(--accent); color: white; border-color: var(--accent); }
+.sync-btn.import { background: var(--card); color: var(--dark); }
+.sync-code-area {
+  margin: 16px auto;
+  max-width: 500px;
+}
+.sync-textarea {
+  width: 100%;
+  min-height: 120px;
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 14px;
+  font-size: 13px;
+  font-family: var(--mono);
+  outline: none;
+  resize: vertical;
+  -webkit-appearance: none;
+  transition: border-color 0.2s;
+}
+.sync-textarea:focus { border-color: var(--accent); }
+.sync-status {
+  font-size: 13px;
+  font-weight: 600;
+  margin-top: 8px;
+  min-height: 20px;
+}
+.sync-status.success { color: var(--green); }
+.sync-status.error { color: #ef4444; }
+.sync-hint {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 16px;
+  line-height: 1.5;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.sync-merge-btns {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 12px;
+}
+.sync-merge-btn {
+  padding: 10px 20px;
+  border-radius: 10px;
+  border: none;
+  font-family: var(--font);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  -webkit-appearance: none;
+  transition: all 0.15s;
+}
+.sync-merge-btn:active { transform: scale(0.96); }
+.sync-merge-btn.merge { background: var(--accent); color: white; }
+.sync-merge-btn.replace { background: var(--bg); color: var(--dark); border: 1px solid var(--border); }
+.sync-merge-btn.cancel { background: var(--bg); color: var(--muted); border: 1px solid var(--border); }
+
+/* ======= INSTALL BANNER ======= */
+.install-banner {
+  background: var(--card);
+  border: 2px solid var(--accent);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.install-icon {
+  font-size: 28px;
+  flex-shrink: 0;
+}
+.install-text {
+  flex: 1;
+}
+.install-text-title {
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.install-text-desc {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.4;
+}
+.install-dismiss {
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 4px 8px;
+  -webkit-appearance: none;
+}
+
+/* ======= EXERCISE SWAP ======= */
+.ex-name-swap {
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.swap-arrow {
+  font-size: 11px;
+  color: var(--accent);
+  transition: transform 0.2s;
+}
+.swap-arrow.open { transform: rotate(180deg); }
+.swap-picker {
+  margin-left: 38px;
+  margin-top: 8px;
+  padding: 8px 0;
+}
+.swap-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  margin-bottom: 4px;
+  border-radius: 10px;
+  cursor: pointer;
+  border: 2px solid var(--border);
+  background: var(--card);
+  font-family: var(--font);
+  -webkit-appearance: none;
+  transition: all 0.15s;
+  width: 100%;
+  text-align: left;
+}
+.swap-option:active { transform: scale(0.97); }
+.swap-option.selected {
+  border-color: var(--accent);
+  background: var(--accent-light);
+}
+.swap-option-name {
+  font-size: 14px;
+  font-weight: 700;
+}
+.swap-option-info {
+  font-size: 11px;
+  color: var(--muted);
+}
+.swap-option-dot {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.swap-option.selected .swap-option-dot {
+  border-color: var(--accent);
+  background: var(--accent);
+}
+.swap-option.selected .swap-option-dot::after {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: white;
+}
+
+/* ======= WARMUP SECTION ======= */
+.warmup-card {
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--card);
+  padding: 16px 18px;
+  margin-bottom: 18px;
+}
+.warmup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.warmup-label {
+  font-size: 10px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-weight: 700;
+}
+.warmup-timer-btn {
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: var(--mono);
+  border: none;
+  cursor: pointer;
+  background: var(--bg);
+  color: var(--muted);
+  -webkit-appearance: none;
+  transition: all 0.2s;
+}
+.warmup-timer-btn:active { transform: scale(0.94); }
+.warmup-timer-btn.active { background: var(--yellow); color: white; }
+.warmup-timer-btn.done { background: var(--green); color: white; }
+.warmup-input {
+  width: 100%;
+  border: none;
+  font-size: 15px;
+  font-family: var(--font);
+  outline: none;
+  background: transparent;
+  color: var(--dark);
+  -webkit-appearance: none;
+}
+.warmup-input::placeholder { color: var(--muted); }
+
 .hidden { display: none; }
 
 /* ======= iPAD RESPONSIVE ======= */
@@ -502,7 +759,7 @@ body {
     margin: 0 auto 32px;
     padding: 5px;
   }
-  .nav-tab { padding: 12px 16px; font-size: 15px; }
+  .nav-tab { padding: 12px 14px; font-size: 15px; }
 
   /* Day cards - bigger on tablet */
   .day-grid {
@@ -560,6 +817,23 @@ body {
   /* Program view */
   .prog-box { padding: 20px 24px; }
   .prog-text { font-size: 14px; }
+
+  /* Sync view */
+  .sync-title { font-size: 22px; }
+  .sync-desc { font-size: 16px; }
+  .sync-btn { padding: 16px 36px; font-size: 17px; }
+  .sync-textarea { font-size: 14px; min-height: 150px; }
+
+  /* Swap picker */
+  .ex-name-swap { font-size: 19px; }
+  .swap-option { padding: 12px 16px; }
+  .swap-option-name { font-size: 15px; }
+  .swap-option-info { font-size: 12px; }
+
+  /* Warmup */
+  .warmup-card { padding: 20px 24px; border-radius: 20px; }
+  .warmup-input { font-size: 16px; }
+  .warmup-timer-btn { padding: 8px 18px; font-size: 15px; }
 }
 
 /* iPad Landscape & iPad Pro Portrait (1024px+) */
@@ -678,25 +952,70 @@ body {
    ======================================== */
 var WORKOUTS = {
   A: { name: "Day A", sub: "Squat + Bench", focus: "Lower Body + Horizontal Push", exs: [
-    { n: "Barbell Back Squat", s: 4, r: "8", rest: 150, cue: "Chest up, knees track toes, hip crease below knee", alt: "" },
-    { n: "DB Bench Press", s: 4, r: "8", rest: 120, cue: "Retract shoulder blades, control the negative", alt: "" },
-    { n: "DB Row", s: 3, r: "10", rest: 90, cue: "Pull elbow to hip, don\u2019t rotate torso", alt: "" },
-    { n: "EZ Bar Curl", s: 3, r: "10", rest: 90, cue: "Slow negative (3 sec down)", alt: "" },
-    { n: "Ab Wheel Rollout", s: 3, r: "8\u201312", rest: 60, cue: "Squeeze abs, don\u2019t let hips sag", alt: "" }
+    { n: "Barbell Back Squat", s: 4, r: "8", rest: 150, cue: "Chest up, knees track toes, hip crease below knee", alts: [
+      { n: "Goblet Squat", s: 4, r: "10", rest: 120, cue: "Hold DB at chest, sit between heels, elbows inside knees" },
+      { n: "Front Squat", s: 4, r: "6", rest: 150, cue: "Elbows high, bar on front delts, stay upright" }
+    ]},
+    { n: "DB Bench Press", s: 4, r: "8", rest: 120, cue: "Retract shoulder blades, control the negative", alts: [
+      { n: "Barbell Bench Press", s: 4, r: "8", rest: 120, cue: "Arch back slightly, bar to mid-chest, drive through feet" },
+      { n: "Floor Press", s: 4, r: "8", rest: 120, cue: "Upper arms touch floor, pause, press up" }
+    ]},
+    { n: "DB Row", s: 3, r: "10", rest: 90, cue: "Pull elbow to hip, don\u2019t rotate torso", alts: [
+      { n: "Barbell Row", s: 3, r: "8", rest: 90, cue: "Hinge forward 45\u00B0, pull to belly button" },
+      { n: "Cable Row", s: 3, r: "10", rest: 90, cue: "Squeeze shoulder blades, controlled release" }
+    ]},
+    { n: "EZ Bar Curl", s: 3, r: "10", rest: 90, cue: "Slow negative (3 sec down)", alts: [
+      { n: "DB Hammer Curl", s: 3, r: "10", rest: 90, cue: "Neutral grip, squeeze at top" },
+      { n: "Barbell Curl", s: 3, r: "10", rest: 90, cue: "Keep elbows pinned, full ROM" }
+    ]},
+    { n: "Ab Wheel Rollout", s: 3, r: "8\u201312", rest: 60, cue: "Squeeze abs, don\u2019t let hips sag", alts: [
+      { n: "Hanging Leg Raise", s: 3, r: "10", rest: 60, cue: "Curl pelvis up, control the swing" },
+      { n: "Cable Crunch", s: 3, r: "12", rest: 60, cue: "Crunch ribs to hips, hold at bottom" }
+    ]}
   ]},
   B: { name: "Day B", sub: "Hinge + OHP", focus: "Posterior Chain + Vertical Push", exs: [
-    { n: "Romanian Deadlift", s: 4, r: "8", rest: 150, cue: "Soft knees, hinge at hips, feel hamstrings", alt: "" },
-    { n: "DB Overhead Press", s: 4, r: "8", rest: 120, cue: "Press slightly forward, lock out overhead", alt: "" },
-    { n: "Lat Pulldown", s: 3, r: "10", rest: 90, cue: "Lead with elbows, squeeze lats at bottom", alt: "" },
-    { n: "Leg Ext / Curl SS", s: 3, r: "10 ea", rest: 60, cue: "Full ROM, pause at peak contraction", alt: "" },
-    { n: "Plank Hold", s: 3, r: "30\u201345s", rest: 60, cue: "Squeeze glutes, body in straight line", alt: "" }
+    { n: "Romanian Deadlift", s: 4, r: "8", rest: 150, cue: "Soft knees, hinge at hips, feel hamstrings", alts: [
+      { n: "Conventional Deadlift", s: 4, r: "5", rest: 180, cue: "Brace hard, push floor away, lock hips at top" },
+      { n: "Good Morning", s: 4, r: "8", rest: 120, cue: "Bar on back, hinge forward, feel hamstring stretch" }
+    ]},
+    { n: "DB Overhead Press", s: 4, r: "8", rest: 120, cue: "Press slightly forward, lock out overhead", alts: [
+      { n: "Barbell OHP", s: 4, r: "6", rest: 150, cue: "Bar starts at chin, press straight up, lean through" },
+      { n: "Landmine Press", s: 4, r: "8", rest: 120, cue: "One arm at a time, press at 45\u00B0 angle" }
+    ]},
+    { n: "Lat Pulldown", s: 3, r: "10", rest: 90, cue: "Lead with elbows, squeeze lats at bottom", alts: [
+      { n: "Pull-Up", s: 3, r: "6\u20138", rest: 120, cue: "Dead hang start, chin over bar, slow negative" },
+      { n: "Band-Assisted Pull-Up", s: 3, r: "8", rest: 90, cue: "Full ROM, control descent" }
+    ]},
+    { n: "Leg Ext / Curl SS", s: 3, r: "10 ea", rest: 60, cue: "Full ROM, pause at peak contraction", alts: [
+      { n: "Walking Lunge", s: 3, r: "10 ea", rest: 90, cue: "Long stride, back knee to floor, stay tall" },
+      { n: "Bulgarian Split Squat", s: 3, r: "8 ea", rest: 90, cue: "Rear foot on bench, drop straight down" }
+    ]},
+    { n: "Plank Hold", s: 3, r: "30\u201345s", rest: 60, cue: "Squeeze glutes, body in straight line", alts: [
+      { n: "Dead Bug", s: 3, r: "10 ea", rest: 60, cue: "Low back pressed to floor, opposite arm/leg extend" },
+      { n: "Pallof Press", s: 3, r: "10 ea", rest: 60, cue: "Press out from chest, resist rotation" }
+    ]}
   ]},
   C: { name: "Day C", sub: "Deadlift + Pull", focus: "Full Body + Back Volume", exs: [
-    { n: "Rack Pull", s: 4, r: "5", rest: 180, cue: "Set pins at knee height, brace core, drive hips through at lockout", alt: "" },
-    { n: "Incline DB Press", s: 3, r: "10", rest: 120, cue: "Elbows at 45\u00B0, not flared wide", alt: "" },
-    { n: "Lat Pulldown (close)", s: 3, r: "10", rest: 90, cue: "Lean back slightly, pull to sternum", alt: "" },
-    { n: "DB Lateral Raise", s: 3, r: "12", rest: 60, cue: "Raise to shoulder height, pour water motion", alt: "" },
-    { n: "Hanging Knee Raise", s: 3, r: "10\u201312", rest: 60, cue: "Curl pelvis up, don\u2019t just swing", alt: "" }
+    { n: "Rack Pull", s: 4, r: "5", rest: 180, cue: "Set pins at knee height, brace core, drive hips through at lockout", alts: [
+      { n: "Conventional Deadlift", s: 4, r: "5", rest: 180, cue: "Brace hard, push floor away, lock hips at top" },
+      { n: "Trap Bar Deadlift", s: 4, r: "6", rest: 180, cue: "Neutral grip, push floor away, stand tall" }
+    ]},
+    { n: "Incline DB Press", s: 3, r: "10", rest: 120, cue: "Elbows at 45\u00B0, not flared wide", alts: [
+      { n: "Incline Barbell Press", s: 3, r: "8", rest: 120, cue: "30\u00B0 bench, bar to upper chest, drive up" },
+      { n: "Flat DB Fly", s: 3, r: "12", rest: 90, cue: "Slight bend in elbows, stretch at bottom" }
+    ]},
+    { n: "Lat Pulldown (close)", s: 3, r: "10", rest: 90, cue: "Lean back slightly, pull to sternum", alts: [
+      { n: "Seated Cable Row", s: 3, r: "10", rest: 90, cue: "Close grip, pull to belly, squeeze" },
+      { n: "Chin-Up", s: 3, r: "6\u20138", rest: 120, cue: "Underhand grip, full hang, chin over bar" }
+    ]},
+    { n: "DB Lateral Raise", s: 3, r: "12", rest: 60, cue: "Raise to shoulder height, pour water motion", alts: [
+      { n: "Cable Lateral Raise", s: 3, r: "12", rest: 60, cue: "Constant tension, raise to shoulder height" },
+      { n: "Face Pull", s: 3, r: "15", rest: 60, cue: "Pull to forehead, externally rotate at end" }
+    ]},
+    { n: "Hanging Knee Raise", s: 3, r: "10\u201312", rest: 60, cue: "Curl pelvis up, don\u2019t just swing", alts: [
+      { n: "Ab Wheel Rollout", s: 3, r: "8\u201310", rest: 60, cue: "Squeeze abs, don\u2019t let hips sag" },
+      { n: "Decline Sit-Up", s: 3, r: "12", rest: 60, cue: "Slow negative, crunch ribs to hips" }
+    ]}
   ]}
 };
 
@@ -713,6 +1032,9 @@ var WEEKS = [
 var timers = {};
 var sessionStart = null;
 var globalTimer = null;
+var warmupTimer = null;
+var warmupSeconds = 0;
+var activeSwaps = {}; // tracks which exercise index is swapped: { "A-0": 1 } means Day A exercise 0 uses alt index 1
 
 function loadHistory() {
   try { return JSON.parse(localStorage.getItem('bgym_history') || '[]'); }
@@ -769,17 +1091,23 @@ function renderHome() {
   h += '<div class="divider"></div>';
   h += '</div>';
 
+  // Install banner
+  h += getInstallBannerHTML();
+
   // Nav tabs
   h += '<div class="nav-tabs">';
   h += '<button class="nav-tab ' + (currentTab === 'workout' ? 'active' : '') + '" onclick="switchTab(\'workout\')">Workouts</button>';
   h += '<button class="nav-tab ' + (currentTab === 'history' ? 'active' : '') + '" onclick="switchTab(\'history\')">History</button>';
   h += '<button class="nav-tab ' + (currentTab === 'program' ? 'active' : '') + '" onclick="switchTab(\'program\')">Program</button>';
+  h += '<button class="nav-tab ' + (currentTab === 'sync' ? 'active' : '') + '" onclick="switchTab(\'sync\')">Sync</button>';
   h += '</div>';
 
   if (currentTab === 'workout') {
     h += renderWorkoutTab();
   } else if (currentTab === 'history') {
     h += renderHistoryTab();
+  } else if (currentTab === 'sync') {
+    h += renderSyncTab();
   } else {
     h += renderProgramTab();
   }
@@ -855,7 +1183,7 @@ function renderHistoryTab() {
     h += '<div class="hist-card">';
     h += '<div class="hist-left">';
     h += '<div class="hist-day">' + w.name + ' \u2014 ' + w.sub + '</div>';
-    h += '<div class="hist-date">' + entry.date + (entry.duration ? ' &bull; ' + entry.duration : '') + '</div>';
+    h += '<div class="hist-date">' + entry.date + (entry.duration ? ' &bull; ' + entry.duration : '') + (entry.warmup ? ' &bull; WU: ' + entry.warmup.substring(0, 30) : '') + '</div>';
     h += '</div>';
     h += '<div class="hist-right">';
     if (entry.notes) h += '<div class="hist-stat" style="max-width:200px;text-align:right">' + entry.notes.substring(0, 60) + (entry.notes.length > 60 ? '...' : '') + '</div>';
@@ -881,11 +1209,48 @@ function renderProgramTab() {
       h += '<div style="font-size:14px;font-weight:700">' + ex.n + '</div>';
       h += '<div style="font-size:12px;color:var(--muted)">' + ex.s + 'x' + ex.r + ' &bull; Rest ' + fmt(ex.rest) + '</div>';
       h += '<div style="font-size:11px;color:var(--muted);font-style:italic;margin-top:2px">' + ex.cue + '</div>';
-      if (ex.alt) h += '<div style="font-size:11px;color:var(--accent);margin-top:2px">' + ex.alt + '</div>';
+      if (ex.alts && ex.alts.length > 0) {
+        h += '<div style="font-size:11px;color:var(--accent);margin-top:2px;font-weight:600">Swap: ' + ex.alts.map(function(a) { return a.n; }).join(', ') + '</div>';
+      }
       h += '</div></div>';
     });
     h += '</div>';
   });
+  h += '</div>';
+  return h;
+}
+
+function renderSyncTab() {
+  var hist = loadHistory();
+  var h = '';
+  h += '<div class="sync-section">';
+  h += '<div class="sync-title">Sync Between Devices</div>';
+  h += '<div class="sync-desc">Transfer your workout data between your phone and iPad.<br>You have <strong>' + hist.length + '</strong> workout' + (hist.length !== 1 ? 's' : '') + ' on this device.</div>';
+
+  // Export/Import buttons
+  h += '<div class="sync-btns">';
+  h += '<button class="sync-btn export" onclick="exportData()">Copy Data</button>';
+  h += '<button class="sync-btn import" onclick="importData()">Paste &amp; Import</button>';
+  h += '</div>';
+
+  // File-based export/import
+  h += '<div class="sync-btns">';
+  h += '<button class="sync-btn" onclick="downloadExport()">Download Backup</button>';
+  h += '<button class="sync-btn" onclick="triggerFileImport()">Import File</button>';
+  h += '</div>';
+
+  // Textarea for data
+  h += '<div class="sync-code-area">';
+  h += '<textarea class="sync-textarea" id="sync-data" placeholder="Export data will appear here, or paste data from your other device..."></textarea>';
+  h += '<div class="sync-status" id="sync-status"></div>';
+  h += '<div class="sync-merge-btns hidden" id="sync-merge-options">';
+  h += '<button class="sync-merge-btn merge" onclick="mergeImport()">Merge</button>';
+  h += '<button class="sync-merge-btn replace" onclick="replaceImport()">Replace All</button>';
+  h += '<button class="sync-merge-btn cancel" onclick="cancelImport()">Cancel</button>';
+  h += '</div>';
+  h += '</div>';
+
+  h += '<div class="sync-hint">To sync: Export on one device, then paste and import on the other. Use "Merge" to combine data without losing workouts from either device.</div>';
   h += '</div>';
   return h;
 }
@@ -908,6 +1273,60 @@ function clearAllTimers() {
   timers = {};
   if (globalTimer) clearInterval(globalTimer);
   globalTimer = null;
+  if (warmupTimer) clearInterval(warmupTimer);
+  warmupTimer = null;
+}
+
+function getActiveEx(key, ei) {
+  var w = WORKOUTS[key];
+  var swapKey = key + '-' + ei;
+  var swapIdx = activeSwaps[swapKey];
+  if (swapIdx !== undefined && swapIdx >= 0 && w.exs[ei].alts && w.exs[ei].alts[swapIdx]) {
+    return w.exs[ei].alts[swapIdx];
+  }
+  return w.exs[ei];
+}
+
+function toggleSwapPicker(key, ei) {
+  var picker = document.getElementById('swap-picker-' + ei);
+  var arrow = document.getElementById('swap-arrow-' + ei);
+  if (picker.classList.contains('hidden')) {
+    picker.classList.remove('hidden');
+    arrow.classList.add('open');
+  } else {
+    picker.classList.add('hidden');
+    arrow.classList.remove('open');
+  }
+}
+
+function selectSwap(key, ei, altIdx) {
+  var swapKey = key + '-' + ei;
+  if (altIdx === -1) {
+    delete activeSwaps[swapKey];
+  } else {
+    activeSwaps[swapKey] = altIdx;
+  }
+  // Re-render the workout
+  startWorkout(key);
+}
+
+function toggleWarmupTimer() {
+  var btn = document.getElementById('warmup-timer-btn');
+  if (warmupTimer) {
+    clearInterval(warmupTimer);
+    warmupTimer = null;
+    btn.className = 'warmup-timer-btn done';
+    btn.textContent = fmtElapsed(warmupSeconds);
+  } else {
+    warmupSeconds = 0;
+    btn.className = 'warmup-timer-btn active';
+    warmupTimer = setInterval(function() {
+      warmupSeconds++;
+      var b = document.getElementById('warmup-timer-btn');
+      if (b) b.textContent = fmtElapsed(warmupSeconds);
+    }, 1000);
+    btn.textContent = '0m 00s';
+  }
 }
 
 function startWorkout(key) {
@@ -929,19 +1348,56 @@ function startWorkout(key) {
   h += '</div>';
 
   // Warmup
-  h += '<div class="section-bar"><div class="section-label">Warmup</div><div class="section-text">5 min treadmill jog</div></div>';
+  h += '<div class="warmup-card">';
+  h += '<div class="warmup-header">';
+  h += '<div class="warmup-label">Warmup</div>';
+  h += '<button class="warmup-timer-btn' + (warmupTimer ? ' active' : '') + '" id="warmup-timer-btn" onclick="toggleWarmupTimer()">' + (warmupTimer ? fmtElapsed(warmupSeconds) : 'Start Timer') + '</button>';
+  h += '</div>';
+  h += '<input class="warmup-input" id="warmup-desc" placeholder="e.g. 5 min treadmill jog, band pull-aparts, arm circles...">';
+  h += '</div>';
 
   // Exercises
   h += '<div class="ex-grid-ipad">';
-  w.exs.forEach(function(ex, ei) {
+  w.exs.forEach(function(origEx, ei) {
+    var ex = getActiveEx(key, ei);
+    var swapKey = key + '-' + ei;
+    var hasAlts = origEx.alts && origEx.alts.length > 0;
+    var currentSwap = activeSwaps[swapKey];
+
     h += '<div class="ex-card" id="ex-' + ei + '">';
     h += '<div class="ex-top">';
     h += '<div class="ex-row1">';
-    h += '<div class="ex-id"><span class="ex-num">' + (ei+1) + '</span><span class="ex-name">' + ex.n + '</span></div>';
+    h += '<div class="ex-id"><span class="ex-num">' + (ei+1) + '</span>';
+    if (hasAlts) {
+      h += '<span class="ex-name-swap" onclick="toggleSwapPicker(\'' + key + '\',' + ei + ')">' + ex.n + ' <span class="swap-arrow" id="swap-arrow-' + ei + '">\u25BC</span></span>';
+    } else {
+      h += '<span class="ex-name">' + ex.n + '</span>';
+    }
+    h += '</div>';
     h += '<button class="rest-btn" id="rest-' + ei + '" onclick="toggleTimer(' + ei + ',' + ex.rest + ')">Rest ' + fmt(ex.rest) + '</button>';
     h += '</div>';
     h += '<div class="ex-info">' + ex.s + ' sets \u00D7 ' + ex.r + ' reps</div>';
-    if (ex.alt) h += '<div class="ex-alt">' + ex.alt + '</div>';
+
+    // Swap picker (hidden by default)
+    if (hasAlts) {
+      h += '<div class="swap-picker hidden" id="swap-picker-' + ei + '">';
+      // Original exercise option
+      h += '<button class="swap-option' + (currentSwap === undefined ? ' selected' : '') + '" onclick="selectSwap(\'' + key + '\',' + ei + ',-1)">';
+      h += '<span class="swap-option-dot"></span>';
+      h += '<div><div class="swap-option-name">' + origEx.n + '</div>';
+      h += '<div class="swap-option-info">' + origEx.s + 'x' + origEx.r + ' &bull; ' + origEx.cue + '</div></div>';
+      h += '</button>';
+      // Alt options
+      origEx.alts.forEach(function(alt, ai) {
+        h += '<button class="swap-option' + (currentSwap === ai ? ' selected' : '') + '" onclick="selectSwap(\'' + key + '\',' + ei + ',' + ai + ')">';
+        h += '<span class="swap-option-dot"></span>';
+        h += '<div><div class="swap-option-name">' + alt.n + '</div>';
+        h += '<div class="swap-option-info">' + alt.s + 'x' + alt.r + ' &bull; ' + alt.cue + '</div></div>';
+        h += '</button>';
+      });
+      h += '</div>';
+    }
+
     h += '<div class="cue-toggle" onclick="toggleCue(' + ei + ')" id="cue-toggle-' + ei + '">\u25B6 Form cue</div>';
     h += '<div class="cue-text hidden" id="cue-' + ei + '">' + ex.cue + '</div>';
     h += '</div>';
@@ -1007,8 +1463,7 @@ function toggleCheck(dayKey, ei, si, prefix) {
     el.classList.add('checked');
   }
   // Check if entire exercise is done
-  var w = WORKOUTS[dayKey];
-  var ex = w.exs[ei];
+  var ex = getActiveEx(dayKey, ei);
   var allDone = true;
   for (var s = 0; s < ex.s; s++) {
     var cd = document.getElementById('cd-' + ei + '-' + s);
@@ -1076,9 +1531,15 @@ function saveWorkout(dayKey) {
   var notesEl = document.getElementById('session-notes');
   if (notesEl) notes = notesEl.value;
 
-  // Collect weight data
+  // Capture warmup
+  var warmupDesc = '';
+  var warmupEl = document.getElementById('warmup-desc');
+  if (warmupEl) warmupDesc = warmupEl.value;
+
+  // Collect weight data (using active/swapped exercises)
   var data = [];
-  w.exs.forEach(function(ex, ei) {
+  w.exs.forEach(function(origEx, ei) {
+    var ex = getActiveEx(dayKey, ei);
     var sets = [];
     for (var si = 0; si < ex.s; si++) {
       var cwEl = document.getElementById('cw-' + ei + '-' + si);
@@ -1093,6 +1554,7 @@ function saveWorkout(dayKey) {
     day: dayKey,
     date: dateStr(new Date()),
     duration: fmtElapsed(elapsed),
+    warmup: warmupDesc,
     notes: notes,
     data: data,
     timestamp: Date.now()
@@ -1108,10 +1570,232 @@ function saveWorkout(dayKey) {
 }
 
 /* ========================================
+   DATA SYNC (EXPORT / IMPORT)
+   ======================================== */
+var pendingImportData = null;
+
+function exportData() {
+  var hist = loadHistory();
+  if (hist.length === 0) {
+    document.getElementById('sync-status').className = 'sync-status error';
+    document.getElementById('sync-status').textContent = 'No workout data to export.';
+    return;
+  }
+  var json = JSON.stringify({ version: 1, exported: Date.now(), history: hist });
+  var textarea = document.getElementById('sync-data');
+  textarea.value = json;
+  textarea.select();
+  textarea.setSelectionRange(0, json.length);
+
+  // Try clipboard API first, fall back to share, then just select
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(json).then(function() {
+      document.getElementById('sync-status').className = 'sync-status success';
+      document.getElementById('sync-status').textContent = 'Copied to clipboard! Paste on your other device.';
+    }).catch(function() {
+      tryShareExport(json);
+    });
+  } else {
+    tryShareExport(json);
+  }
+}
+
+function tryShareExport(json) {
+  if (navigator.share) {
+    navigator.share({
+      title: 'Garage Gym Data',
+      text: json
+    }).then(function() {
+      document.getElementById('sync-status').className = 'sync-status success';
+      document.getElementById('sync-status').textContent = 'Shared! Open on your other device.';
+    }).catch(function() {
+      document.getElementById('sync-status').className = 'sync-status success';
+      document.getElementById('sync-status').textContent = 'Data selected. Copy it manually and paste on your other device.';
+    });
+  } else {
+    document.getElementById('sync-status').className = 'sync-status success';
+    document.getElementById('sync-status').textContent = 'Data selected. Copy it and paste on your other device.';
+  }
+}
+
+function importData() {
+  var textarea = document.getElementById('sync-data');
+  var raw = textarea.value.trim();
+  if (!raw) {
+    document.getElementById('sync-status').className = 'sync-status error';
+    document.getElementById('sync-status').textContent = 'Paste your exported data above first.';
+    return;
+  }
+  try {
+    var parsed = JSON.parse(raw);
+    if (!parsed.history || !Array.isArray(parsed.history)) {
+      throw new Error('Invalid format');
+    }
+    pendingImportData = parsed.history;
+    var existing = loadHistory();
+    if (existing.length === 0) {
+      // No existing data, just import directly
+      saveHistory(pendingImportData);
+      pendingImportData = null;
+      document.getElementById('sync-status').className = 'sync-status success';
+      document.getElementById('sync-status').textContent = 'Imported ' + parsed.history.length + ' workouts!';
+      textarea.value = '';
+      document.getElementById('sync-merge-options').classList.add('hidden');
+    } else {
+      // Existing data — ask user how to handle
+      document.getElementById('sync-status').className = 'sync-status';
+      document.getElementById('sync-status').textContent = 'You have ' + existing.length + ' existing workouts. Import ' + parsed.history.length + ' workouts how?';
+      document.getElementById('sync-merge-options').classList.remove('hidden');
+    }
+  } catch(e) {
+    document.getElementById('sync-status').className = 'sync-status error';
+    document.getElementById('sync-status').textContent = 'Invalid data format. Make sure you pasted the full export.';
+  }
+}
+
+function mergeImport() {
+  if (!pendingImportData) return;
+  var existing = loadHistory();
+  // Merge by timestamp to avoid duplicates
+  var seen = {};
+  existing.forEach(function(e) { seen[e.timestamp] = true; });
+  var added = 0;
+  pendingImportData.forEach(function(e) {
+    if (!seen[e.timestamp]) {
+      existing.push(e);
+      added++;
+    }
+  });
+  existing.sort(function(a, b) { return a.timestamp - b.timestamp; });
+  saveHistory(existing);
+  pendingImportData = null;
+  document.getElementById('sync-status').className = 'sync-status success';
+  document.getElementById('sync-status').textContent = 'Merged! Added ' + added + ' new workouts.';
+  document.getElementById('sync-merge-options').classList.add('hidden');
+  document.getElementById('sync-data').value = '';
+}
+
+function replaceImport() {
+  if (!pendingImportData) return;
+  if (!confirm('This will replace ALL existing workout data. Are you sure?')) return;
+  saveHistory(pendingImportData);
+  pendingImportData = null;
+  document.getElementById('sync-status').className = 'sync-status success';
+  document.getElementById('sync-status').textContent = 'Replaced all data with import!';
+  document.getElementById('sync-merge-options').classList.add('hidden');
+  document.getElementById('sync-data').value = '';
+}
+
+function cancelImport() {
+  pendingImportData = null;
+  document.getElementById('sync-status').className = 'sync-status';
+  document.getElementById('sync-status').textContent = '';
+  document.getElementById('sync-merge-options').classList.add('hidden');
+}
+
+function downloadExport() {
+  var hist = loadHistory();
+  if (hist.length === 0) {
+    document.getElementById('sync-status').className = 'sync-status error';
+    document.getElementById('sync-status').textContent = 'No workout data to export.';
+    return;
+  }
+  var json = JSON.stringify({ version: 1, exported: Date.now(), history: hist }, null, 2);
+  var blob = new Blob([json], { type: 'application/json' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = 'garage-gym-backup-' + new Date().toISOString().slice(0,10) + '.json';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  document.getElementById('sync-status').className = 'sync-status success';
+  document.getElementById('sync-status').textContent = 'Downloaded backup file!';
+}
+
+function triggerFileImport() {
+  var input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.json,application/json';
+  input.onchange = function(e) {
+    var file = e.target.files[0];
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function(ev) {
+      document.getElementById('sync-data').value = ev.target.result;
+      importData();
+    };
+    reader.readAsText(file);
+  };
+  input.click();
+}
+
+/* ========================================
+   INSTALL PROMPT
+   ======================================== */
+function isStandalone() {
+  return window.matchMedia('(display-mode: standalone)').matches ||
+         window.navigator.standalone === true;
+}
+
+function isIOS() {
+  return /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+         (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+}
+
+function dismissInstall() {
+  try { localStorage.setItem('bgym_install_dismissed', Date.now()); } catch(e) {}
+  var banner = document.getElementById('install-banner');
+  if (banner) banner.remove();
+}
+
+function shouldShowInstallBanner() {
+  if (isStandalone()) return false;
+  try {
+    var dismissed = localStorage.getItem('bgym_install_dismissed');
+    if (dismissed) {
+      // Show again after 7 days
+      var daysSince = (Date.now() - parseInt(dismissed)) / (1000 * 60 * 60 * 24);
+      if (daysSince < 7) return false;
+    }
+  } catch(e) {}
+  return true;
+}
+
+function getInstallBannerHTML() {
+  if (!shouldShowInstallBanner()) return '';
+  var h = '<div class="install-banner" id="install-banner">';
+  h += '<div class="install-icon">\u{1F4F2}</div>';
+  h += '<div class="install-text">';
+  h += '<div class="install-text-title">Install as App</div>';
+  if (isIOS()) {
+    h += '<div class="install-text-desc">Tap the share button <span style="font-family:var(--mono)">[\u{2B06}\uFE0F]</span> then "Add to Home Screen" to use this like a native app.</div>';
+  } else {
+    h += '<div class="install-text-desc">Add this to your home screen for full-screen use, offline access, and faster loading.</div>';
+  }
+  h += '</div>';
+  h += '<button class="install-dismiss" onclick="dismissInstall()">\u2715</button>';
+  h += '</div>';
+  return h;
+}
+
+/* ========================================
    SERVICE WORKER
    ======================================== */
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('sw.js').catch(function() {});
+  navigator.serviceWorker.register('sw.js').then(function(reg) {
+    // Check for updates periodically
+    reg.addEventListener('updatefound', function() {
+      var newWorker = reg.installing;
+      newWorker.addEventListener('statechange', function() {
+        if (newWorker.state === 'activated') {
+          // New version available, refresh silently on next visit
+          console.log('App updated. Refresh for latest version.');
+        }
+      });
+    });
+  }).catch(function() {});
 }
 
 /* ========================================
