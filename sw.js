@@ -1,4 +1,4 @@
-var CACHE_NAME = 'boser-gym-v3';
+var CACHE_NAME = 'boser-gym-v4';
 var urlsToCache = [
   './index.html',
   './icon-192.png',
