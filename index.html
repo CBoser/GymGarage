@@ -616,6 +616,127 @@ body {
   -webkit-appearance: none;
 }
 
+/* ======= EXERCISE SWAP ======= */
+.ex-name-swap {
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.swap-arrow {
+  font-size: 11px;
+  color: var(--accent);
+  transition: transform 0.2s;
+}
+.swap-arrow.open { transform: rotate(180deg); }
+.swap-picker {
+  margin-left: 38px;
+  margin-top: 8px;
+  padding: 8px 0;
+}
+.swap-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  margin-bottom: 4px;
+  border-radius: 10px;
+  cursor: pointer;
+  border: 2px solid var(--border);
+  background: var(--card);
+  font-family: var(--font);
+  -webkit-appearance: none;
+  transition: all 0.15s;
+  width: 100%;
+  text-align: left;
+}
+.swap-option:active { transform: scale(0.97); }
+.swap-option.selected {
+  border-color: var(--accent);
+  background: var(--accent-light);
+}
+.swap-option-name {
+  font-size: 14px;
+  font-weight: 700;
+}
+.swap-option-info {
+  font-size: 11px;
+  color: var(--muted);
+}
+.swap-option-dot {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.swap-option.selected .swap-option-dot {
+  border-color: var(--accent);
+  background: var(--accent);
+}
+.swap-option.selected .swap-option-dot::after {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: white;
+}
+
+/* ======= WARMUP SECTION ======= */
+.warmup-card {
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--card);
+  padding: 16px 18px;
+  margin-bottom: 18px;
+}
+.warmup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.warmup-label {
+  font-size: 10px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-weight: 700;
+}
+.warmup-timer-btn {
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: var(--mono);
+  border: none;
+  cursor: pointer;
+  background: var(--bg);
+  color: var(--muted);
+  -webkit-appearance: none;
+  transition: all 0.2s;
+}
+.warmup-timer-btn:active { transform: scale(0.94); }
+.warmup-timer-btn.active { background: var(--yellow); color: white; }
+.warmup-timer-btn.done { background: var(--green); color: white; }
+.warmup-input {
+  width: 100%;
+  border: none;
+  font-size: 15px;
+  font-family: var(--font);
+  outline: none;
+  background: transparent;
+  color: var(--dark);
+  -webkit-appearance: none;
+}
+.warmup-input::placeholder { color: var(--muted); }
+
 .hidden { display: none; }
 
 /* ======= iPAD RESPONSIVE ======= */
@@ -702,6 +823,17 @@ body {
   .sync-desc { font-size: 16px; }
   .sync-btn { padding: 16px 36px; font-size: 17px; }
   .sync-textarea { font-size: 14px; min-height: 150px; }
+
+  /* Swap picker */
+  .ex-name-swap { font-size: 19px; }
+  .swap-option { padding: 12px 16px; }
+  .swap-option-name { font-size: 15px; }
+  .swap-option-info { font-size: 12px; }
+
+  /* Warmup */
+  .warmup-card { padding: 20px 24px; border-radius: 20px; }
+  .warmup-input { font-size: 16px; }
+  .warmup-timer-btn { padding: 8px 18px; font-size: 15px; }
 }
 
 /* iPad Landscape & iPad Pro Portrait (1024px+) */
@@ -820,25 +952,70 @@ body {
    ======================================== */
 var WORKOUTS = {
   A: { name: "Day A", sub: "Squat + Bench", focus: "Lower Body + Horizontal Push", exs: [
-    { n: "Barbell Back Squat", s: 4, r: "8", rest: 150, cue: "Chest up, knees track toes, hip crease below knee", alt: "" },
-    { n: "DB Bench Press", s: 4, r: "8", rest: 120, cue: "Retract shoulder blades, control the negative", alt: "" },
-    { n: "DB Row", s: 3, r: "10", rest: 90, cue: "Pull elbow to hip, don\u2019t rotate torso", alt: "" },
-    { n: "EZ Bar Curl", s: 3, r: "10", rest: 90, cue: "Slow negative (3 sec down)", alt: "" },
-    { n: "Ab Wheel Rollout", s: 3, r: "8\u201312", rest: 60, cue: "Squeeze abs, don\u2019t let hips sag", alt: "" }
+    { n: "Barbell Back Squat", s: 4, r: "8", rest: 150, cue: "Chest up, knees track toes, hip crease below knee", alts: [
+      { n: "Goblet Squat", s: 4, r: "10", rest: 120, cue: "Hold DB at chest, sit between heels, elbows inside knees" },
+      { n: "Front Squat", s: 4, r: "6", rest: 150, cue: "Elbows high, bar on front delts, stay upright" }
+    ]},
+    { n: "DB Bench Press", s: 4, r: "8", rest: 120, cue: "Retract shoulder blades, control the negative", alts: [
+      { n: "Barbell Bench Press", s: 4, r: "8", rest: 120, cue: "Arch back slightly, bar to mid-chest, drive through feet" },
+      { n: "Floor Press", s: 4, r: "8", rest: 120, cue: "Upper arms touch floor, pause, press up" }
+    ]},
+    { n: "DB Row", s: 3, r: "10", rest: 90, cue: "Pull elbow to hip, don\u2019t rotate torso", alts: [
+      { n: "Barbell Row", s: 3, r: "8", rest: 90, cue: "Hinge forward 45\u00B0, pull to belly button" },
+      { n: "Cable Row", s: 3, r: "10", rest: 90, cue: "Squeeze shoulder blades, controlled release" }
+    ]},
+    { n: "EZ Bar Curl", s: 3, r: "10", rest: 90, cue: "Slow negative (3 sec down)", alts: [
+      { n: "DB Hammer Curl", s: 3, r: "10", rest: 90, cue: "Neutral grip, squeeze at top" },
+      { n: "Barbell Curl", s: 3, r: "10", rest: 90, cue: "Keep elbows pinned, full ROM" }
+    ]},
+    { n: "Ab Wheel Rollout", s: 3, r: "8\u201312", rest: 60, cue: "Squeeze abs, don\u2019t let hips sag", alts: [
+      { n: "Hanging Leg Raise", s: 3, r: "10", rest: 60, cue: "Curl pelvis up, control the swing" },
+      { n: "Cable Crunch", s: 3, r: "12", rest: 60, cue: "Crunch ribs to hips, hold at bottom" }
+    ]}
   ]},
   B: { name: "Day B", sub: "Hinge + OHP", focus: "Posterior Chain + Vertical Push", exs: [
-    { n: "Romanian Deadlift", s: 4, r: "8", rest: 150, cue: "Soft knees, hinge at hips, feel hamstrings", alt: "" },
-    { n: "DB Overhead Press", s: 4, r: "8", rest: 120, cue: "Press slightly forward, lock out overhead", alt: "" },
-    { n: "Lat Pulldown", s: 3, r: "10", rest: 90, cue: "Lead with elbows, squeeze lats at bottom", alt: "" },
-    { n: "Leg Ext / Curl SS", s: 3, r: "10 ea", rest: 60, cue: "Full ROM, pause at peak contraction", alt: "" },
-    { n: "Plank Hold", s: 3, r: "30\u201345s", rest: 60, cue: "Squeeze glutes, body in straight line", alt: "" }
+    { n: "Romanian Deadlift", s: 4, r: "8", rest: 150, cue: "Soft knees, hinge at hips, feel hamstrings", alts: [
+      { n: "Conventional Deadlift", s: 4, r: "5", rest: 180, cue: "Brace hard, push floor away, lock hips at top" },
+      { n: "Good Morning", s: 4, r: "8", rest: 120, cue: "Bar on back, hinge forward, feel hamstring stretch" }
+    ]},
+    { n: "DB Overhead Press", s: 4, r: "8", rest: 120, cue: "Press slightly forward, lock out overhead", alts: [
+      { n: "Barbell OHP", s: 4, r: "6", rest: 150, cue: "Bar starts at chin, press straight up, lean through" },
+      { n: "Landmine Press", s: 4, r: "8", rest: 120, cue: "One arm at a time, press at 45\u00B0 angle" }
+    ]},
+    { n: "Lat Pulldown", s: 3, r: "10", rest: 90, cue: "Lead with elbows, squeeze lats at bottom", alts: [
+      { n: "Pull-Up", s: 3, r: "6\u20138", rest: 120, cue: "Dead hang start, chin over bar, slow negative" },
+      { n: "Band-Assisted Pull-Up", s: 3, r: "8", rest: 90, cue: "Full ROM, control descent" }
+    ]},
+    { n: "Leg Ext / Curl SS", s: 3, r: "10 ea", rest: 60, cue: "Full ROM, pause at peak contraction", alts: [
+      { n: "Walking Lunge", s: 3, r: "10 ea", rest: 90, cue: "Long stride, back knee to floor, stay tall" },
+      { n: "Bulgarian Split Squat", s: 3, r: "8 ea", rest: 90, cue: "Rear foot on bench, drop straight down" }
+    ]},
+    { n: "Plank Hold", s: 3, r: "30\u201345s", rest: 60, cue: "Squeeze glutes, body in straight line", alts: [
+      { n: "Dead Bug", s: 3, r: "10 ea", rest: 60, cue: "Low back pressed to floor, opposite arm/leg extend" },
+      { n: "Pallof Press", s: 3, r: "10 ea", rest: 60, cue: "Press out from chest, resist rotation" }
+    ]}
   ]},
   C: { name: "Day C", sub: "Deadlift + Pull", focus: "Full Body + Back Volume", exs: [
-    { n: "Rack Pull", s: 4, r: "5", rest: 180, cue: "Set pins at knee height, brace core, drive hips through at lockout", alt: "" },
-    { n: "Incline DB Press", s: 3, r: "10", rest: 120, cue: "Elbows at 45\u00B0, not flared wide", alt: "" },
-    { n: "Lat Pulldown (close)", s: 3, r: "10", rest: 90, cue: "Lean back slightly, pull to sternum", alt: "" },
-    { n: "DB Lateral Raise", s: 3, r: "12", rest: 60, cue: "Raise to shoulder height, pour water motion", alt: "" },
-    { n: "Hanging Knee Raise", s: 3, r: "10\u201312", rest: 60, cue: "Curl pelvis up, don\u2019t just swing", alt: "" }
+    { n: "Rack Pull", s: 4, r: "5", rest: 180, cue: "Set pins at knee height, brace core, drive hips through at lockout", alts: [
+      { n: "Conventional Deadlift", s: 4, r: "5", rest: 180, cue: "Brace hard, push floor away, lock hips at top" },
+      { n: "Trap Bar Deadlift", s: 4, r: "6", rest: 180, cue: "Neutral grip, push floor away, stand tall" }
+    ]},
+    { n: "Incline DB Press", s: 3, r: "10", rest: 120, cue: "Elbows at 45\u00B0, not flared wide", alts: [
+      { n: "Incline Barbell Press", s: 3, r: "8", rest: 120, cue: "30\u00B0 bench, bar to upper chest, drive up" },
+      { n: "Flat DB Fly", s: 3, r: "12", rest: 90, cue: "Slight bend in elbows, stretch at bottom" }
+    ]},
+    { n: "Lat Pulldown (close)", s: 3, r: "10", rest: 90, cue: "Lean back slightly, pull to sternum", alts: [
+      { n: "Seated Cable Row", s: 3, r: "10", rest: 90, cue: "Close grip, pull to belly, squeeze" },
+      { n: "Chin-Up", s: 3, r: "6\u20138", rest: 120, cue: "Underhand grip, full hang, chin over bar" }
+    ]},
+    { n: "DB Lateral Raise", s: 3, r: "12", rest: 60, cue: "Raise to shoulder height, pour water motion", alts: [
+      { n: "Cable Lateral Raise", s: 3, r: "12", rest: 60, cue: "Constant tension, raise to shoulder height" },
+      { n: "Face Pull", s: 3, r: "15", rest: 60, cue: "Pull to forehead, externally rotate at end" }
+    ]},
+    { n: "Hanging Knee Raise", s: 3, r: "10\u201312", rest: 60, cue: "Curl pelvis up, don\u2019t just swing", alts: [
+      { n: "Ab Wheel Rollout", s: 3, r: "8\u201310", rest: 60, cue: "Squeeze abs, don\u2019t let hips sag" },
+      { n: "Decline Sit-Up", s: 3, r: "12", rest: 60, cue: "Slow negative, crunch ribs to hips" }
+    ]}
   ]}
 };
 
@@ -855,6 +1032,9 @@ var WEEKS = [
 var timers = {};
 var sessionStart = null;
 var globalTimer = null;
+var warmupTimer = null;
+var warmupSeconds = 0;
+var activeSwaps = {}; // tracks which exercise index is swapped: { "A-0": 1 } means Day A exercise 0 uses alt index 1
 
 function loadHistory() {
   try { return JSON.parse(localStorage.getItem('bgym_history') || '[]'); }
@@ -1003,7 +1183,7 @@ function renderHistoryTab() {
     h += '<div class="hist-card">';
     h += '<div class="hist-left">';
     h += '<div class="hist-day">' + w.name + ' \u2014 ' + w.sub + '</div>';
-    h += '<div class="hist-date">' + entry.date + (entry.duration ? ' &bull; ' + entry.duration : '') + '</div>';
+    h += '<div class="hist-date">' + entry.date + (entry.duration ? ' &bull; ' + entry.duration : '') + (entry.warmup ? ' &bull; WU: ' + entry.warmup.substring(0, 30) : '') + '</div>';
     h += '</div>';
     h += '<div class="hist-right">';
     if (entry.notes) h += '<div class="hist-stat" style="max-width:200px;text-align:right">' + entry.notes.substring(0, 60) + (entry.notes.length > 60 ? '...' : '') + '</div>';
@@ -1029,7 +1209,9 @@ function renderProgramTab() {
       h += '<div style="font-size:14px;font-weight:700">' + ex.n + '</div>';
       h += '<div style="font-size:12px;color:var(--muted)">' + ex.s + 'x' + ex.r + ' &bull; Rest ' + fmt(ex.rest) + '</div>';
       h += '<div style="font-size:11px;color:var(--muted);font-style:italic;margin-top:2px">' + ex.cue + '</div>';
-      if (ex.alt) h += '<div style="font-size:11px;color:var(--accent);margin-top:2px">' + ex.alt + '</div>';
+      if (ex.alts && ex.alts.length > 0) {
+        h += '<div style="font-size:11px;color:var(--accent);margin-top:2px;font-weight:600">Swap: ' + ex.alts.map(function(a) { return a.n; }).join(', ') + '</div>';
+      }
       h += '</div></div>';
     });
     h += '</div>';
@@ -1091,6 +1273,60 @@ function clearAllTimers() {
   timers = {};
   if (globalTimer) clearInterval(globalTimer);
   globalTimer = null;
+  if (warmupTimer) clearInterval(warmupTimer);
+  warmupTimer = null;
+}
+
+function getActiveEx(key, ei) {
+  var w = WORKOUTS[key];
+  var swapKey = key + '-' + ei;
+  var swapIdx = activeSwaps[swapKey];
+  if (swapIdx !== undefined && swapIdx >= 0 && w.exs[ei].alts && w.exs[ei].alts[swapIdx]) {
+    return w.exs[ei].alts[swapIdx];
+  }
+  return w.exs[ei];
+}
+
+function toggleSwapPicker(key, ei) {
+  var picker = document.getElementById('swap-picker-' + ei);
+  var arrow = document.getElementById('swap-arrow-' + ei);
+  if (picker.classList.contains('hidden')) {
+    picker.classList.remove('hidden');
+    arrow.classList.add('open');
+  } else {
+    picker.classList.add('hidden');
+    arrow.classList.remove('open');
+  }
+}
+
+function selectSwap(key, ei, altIdx) {
+  var swapKey = key + '-' + ei;
+  if (altIdx === -1) {
+    delete activeSwaps[swapKey];
+  } else {
+    activeSwaps[swapKey] = altIdx;
+  }
+  // Re-render the workout
+  startWorkout(key);
+}
+
+function toggleWarmupTimer() {
+  var btn = document.getElementById('warmup-timer-btn');
+  if (warmupTimer) {
+    clearInterval(warmupTimer);
+    warmupTimer = null;
+    btn.className = 'warmup-timer-btn done';
+    btn.textContent = fmtElapsed(warmupSeconds);
+  } else {
+    warmupSeconds = 0;
+    btn.className = 'warmup-timer-btn active';
+    warmupTimer = setInterval(function() {
+      warmupSeconds++;
+      var b = document.getElementById('warmup-timer-btn');
+      if (b) b.textContent = fmtElapsed(warmupSeconds);
+    }, 1000);
+    btn.textContent = '0m 00s';
+  }
 }
 
 function startWorkout(key) {
@@ -1112,19 +1348,56 @@ function startWorkout(key) {
   h += '</div>';
 
   // Warmup
-  h += '<div class="section-bar"><div class="section-label">Warmup</div><div class="section-text">5 min treadmill jog</div></div>';
+  h += '<div class="warmup-card">';
+  h += '<div class="warmup-header">';
+  h += '<div class="warmup-label">Warmup</div>';
+  h += '<button class="warmup-timer-btn' + (warmupTimer ? ' active' : '') + '" id="warmup-timer-btn" onclick="toggleWarmupTimer()">' + (warmupTimer ? fmtElapsed(warmupSeconds) : 'Start Timer') + '</button>';
+  h += '</div>';
+  h += '<input class="warmup-input" id="warmup-desc" placeholder="e.g. 5 min treadmill jog, band pull-aparts, arm circles...">';
+  h += '</div>';
 
   // Exercises
   h += '<div class="ex-grid-ipad">';
-  w.exs.forEach(function(ex, ei) {
+  w.exs.forEach(function(origEx, ei) {
+    var ex = getActiveEx(key, ei);
+    var swapKey = key + '-' + ei;
+    var hasAlts = origEx.alts && origEx.alts.length > 0;
+    var currentSwap = activeSwaps[swapKey];
+
     h += '<div class="ex-card" id="ex-' + ei + '">';
     h += '<div class="ex-top">';
     h += '<div class="ex-row1">';
-    h += '<div class="ex-id"><span class="ex-num">' + (ei+1) + '</span><span class="ex-name">' + ex.n + '</span></div>';
+    h += '<div class="ex-id"><span class="ex-num">' + (ei+1) + '</span>';
+    if (hasAlts) {
+      h += '<span class="ex-name-swap" onclick="toggleSwapPicker(\'' + key + '\',' + ei + ')">' + ex.n + ' <span class="swap-arrow" id="swap-arrow-' + ei + '">\u25BC</span></span>';
+    } else {
+      h += '<span class="ex-name">' + ex.n + '</span>';
+    }
+    h += '</div>';
     h += '<button class="rest-btn" id="rest-' + ei + '" onclick="toggleTimer(' + ei + ',' + ex.rest + ')">Rest ' + fmt(ex.rest) + '</button>';
     h += '</div>';
     h += '<div class="ex-info">' + ex.s + ' sets \u00D7 ' + ex.r + ' reps</div>';
-    if (ex.alt) h += '<div class="ex-alt">' + ex.alt + '</div>';
+
+    // Swap picker (hidden by default)
+    if (hasAlts) {
+      h += '<div class="swap-picker hidden" id="swap-picker-' + ei + '">';
+      // Original exercise option
+      h += '<button class="swap-option' + (currentSwap === undefined ? ' selected' : '') + '" onclick="selectSwap(\'' + key + '\',' + ei + ',-1)">';
+      h += '<span class="swap-option-dot"></span>';
+      h += '<div><div class="swap-option-name">' + origEx.n + '</div>';
+      h += '<div class="swap-option-info">' + origEx.s + 'x' + origEx.r + ' &bull; ' + origEx.cue + '</div></div>';
+      h += '</button>';
+      // Alt options
+      origEx.alts.forEach(function(alt, ai) {
+        h += '<button class="swap-option' + (currentSwap === ai ? ' selected' : '') + '" onclick="selectSwap(\'' + key + '\',' + ei + ',' + ai + ')">';
+        h += '<span class="swap-option-dot"></span>';
+        h += '<div><div class="swap-option-name">' + alt.n + '</div>';
+        h += '<div class="swap-option-info">' + alt.s + 'x' + alt.r + ' &bull; ' + alt.cue + '</div></div>';
+        h += '</button>';
+      });
+      h += '</div>';
+    }
+
     h += '<div class="cue-toggle" onclick="toggleCue(' + ei + ')" id="cue-toggle-' + ei + '">\u25B6 Form cue</div>';
     h += '<div class="cue-text hidden" id="cue-' + ei + '">' + ex.cue + '</div>';
     h += '</div>';
@@ -1190,8 +1463,7 @@ function toggleCheck(dayKey, ei, si, prefix) {
     el.classList.add('checked');
   }
   // Check if entire exercise is done
-  var w = WORKOUTS[dayKey];
-  var ex = w.exs[ei];
+  var ex = getActiveEx(dayKey, ei);
   var allDone = true;
   for (var s = 0; s < ex.s; s++) {
     var cd = document.getElementById('cd-' + ei + '-' + s);
@@ -1259,9 +1531,15 @@ function saveWorkout(dayKey) {
   var notesEl = document.getElementById('session-notes');
   if (notesEl) notes = notesEl.value;
 
-  // Collect weight data
+  // Capture warmup
+  var warmupDesc = '';
+  var warmupEl = document.getElementById('warmup-desc');
+  if (warmupEl) warmupDesc = warmupEl.value;
+
+  // Collect weight data (using active/swapped exercises)
   var data = [];
-  w.exs.forEach(function(ex, ei) {
+  w.exs.forEach(function(origEx, ei) {
+    var ex = getActiveEx(dayKey, ei);
     var sets = [];
     for (var si = 0; si < ex.s; si++) {
       var cwEl = document.getElementById('cw-' + ei + '-' + si);
@@ -1276,6 +1554,7 @@ function saveWorkout(dayKey) {
     day: dayKey,
     date: dateStr(new Date()),
     duration: fmtElapsed(elapsed),
+    warmup: warmupDesc,
     notes: notes,
     data: data,
     timestamp: Date.now()
