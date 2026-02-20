@@ -1,5 +1,11 @@
-var CACHE_NAME = 'boser-gym-v2';
-var urlsToCache = ['./index.html'];
+var CACHE_NAME = 'boser-gym-v3';
+var urlsToCache = [
+  './index.html',
+  './icon-192.png',
+  './icon-512.png',
+  './icon-180.png',
+  './manifest.json'
+];
 
 self.addEventListener('install', function(event) {
   event.waitUntil(
@@ -11,11 +17,32 @@ self.addEventListener('install', function(event) {
 });
 
 self.addEventListener('fetch', function(event) {
-  event.respondWith(
-    caches.match(event.request).then(function(response) {
-      return response || fetch(event.request);
-    })
-  );
+  // Network-first for HTML (so updates are picked up), cache-first for assets
+  if (event.request.url.endsWith('.html') || event.request.url.endsWith('/')) {
+    event.respondWith(
+      fetch(event.request).then(function(response) {
+        var clone = response.clone();
+        caches.open(CACHE_NAME).then(function(cache) {
+          cache.put(event.request, clone);
+        });
+        return response;
+      }).catch(function() {
+        return caches.match(event.request);
+      })
+    );
+  } else {
+    event.respondWith(
+      caches.match(event.request).then(function(response) {
+        return response || fetch(event.request).then(function(fetchResponse) {
+          var clone = fetchResponse.clone();
+          caches.open(CACHE_NAME).then(function(cache) {
+            cache.put(event.request, clone);
+          });
+          return fetchResponse;
+        });
+      })
+    );
+  }
 });
 
 self.addEventListener('activate', function(event) {
@@ -27,4 +54,5 @@ self.addEventListener('activate', function(event) {
       );
     })
   );
+  self.clients.claim();
 });
