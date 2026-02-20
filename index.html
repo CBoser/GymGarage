@@ -1035,6 +1035,7 @@ var globalTimer = null;
 var warmupTimer = null;
 var warmupSeconds = 0;
 var activeSwaps = {}; // tracks which exercise index is swapped: { "A-0": 1 } means Day A exercise 0 uses alt index 1
+var currentWorkoutKey = null;
 
 function loadHistory() {
   try { return JSON.parse(localStorage.getItem('bgym_history') || '[]'); }
@@ -1070,11 +1071,97 @@ function dateStr(d) {
 }
 
 /* ========================================
+   AUTOSAVE (DRAFT)
+   ======================================== */
+function saveDraft(dayKey) {
+  var w = WORKOUTS[dayKey];
+  var draft = {
+    dayKey: dayKey,
+    weights: {},
+    checks: {},
+    notes: '',
+    warmupDesc: '',
+    warmupSeconds: warmupSeconds,
+    warmupRunning: !!warmupTimer,
+    activeSwaps: JSON.parse(JSON.stringify(activeSwaps)),
+    sessionStart: sessionStart,
+    savedAt: Date.now()
+  };
+  w.exs.forEach(function(origEx, ei) {
+    var ex = getActiveEx(dayKey, ei);
+    for (var si = 0; si < ex.s; si++) {
+      var wEl = document.getElementById('cw-' + ei + '-' + si);
+      if (wEl) draft.weights['cw-' + ei + '-' + si] = wEl.value;
+      var cEl = document.getElementById('cd-' + ei + '-' + si);
+      if (cEl) draft.checks['cd-' + ei + '-' + si] = cEl.classList.contains('checked');
+    }
+  });
+  var notesEl = document.getElementById('session-notes');
+  if (notesEl) draft.notes = notesEl.value;
+  var warmupEl = document.getElementById('warmup-desc');
+  if (warmupEl) draft.warmupDesc = warmupEl.value;
+  try { localStorage.setItem('bgym_draft', JSON.stringify(draft)); } catch(e) {}
+}
+
+function loadDraft() {
+  try { return JSON.parse(localStorage.getItem('bgym_draft')); }
+  catch(e) { return null; }
+}
+
+function clearDraft() {
+  try { localStorage.removeItem('bgym_draft'); } catch(e) {}
+}
+
+function setupAutosave(key) {
+  var inputs = document.querySelectorAll('.sr-input, .notes-input, .warmup-input');
+  for (var i = 0; i < inputs.length; i++) {
+    (function(el) {
+      el.addEventListener('input', function() { saveDraft(key); });
+    })(inputs[i]);
+  }
+}
+
+function restoreDraft(draft, dayKey) {
+  if (!draft || draft.dayKey !== dayKey) return;
+  // Restore weights
+  Object.keys(draft.weights).forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.value = draft.weights[id];
+  });
+  // Restore checks
+  Object.keys(draft.checks).forEach(function(id) {
+    if (draft.checks[id]) {
+      var el = document.getElementById(id);
+      if (el) el.classList.add('checked');
+    }
+  });
+  // Restore notes
+  var notesEl = document.getElementById('session-notes');
+  if (notesEl && draft.notes) notesEl.value = draft.notes;
+  // Restore warmup description
+  var warmupEl = document.getElementById('warmup-desc');
+  if (warmupEl && draft.warmupDesc) warmupEl.value = draft.warmupDesc;
+  // Update exercise card completion states
+  WORKOUTS[dayKey].exs.forEach(function(origEx, ei) {
+    var ex = getActiveEx(dayKey, ei);
+    var allDone = true;
+    for (var s = 0; s < ex.s; s++) {
+      var cd = document.getElementById('cd-' + ei + '-' + s);
+      if (!cd || !cd.classList.contains('checked')) { allDone = false; break; }
+    }
+    var card = document.getElementById('ex-' + ei);
+    if (card && allDone) card.classList.add('complete');
+  });
+}
+
+/* ========================================
    HOME VIEW
    ======================================== */
 var currentTab = 'workout';
 
 function showHome() {
+  if (currentWorkoutKey) saveDraft(currentWorkoutKey);
+  currentWorkoutKey = null;
   clearAllTimers();
   currentTab = 'workout';
   renderHome();
@@ -1122,17 +1209,23 @@ function switchTab(tab) {
 
 function renderWorkoutTab() {
   var h = '';
+  var draft = loadDraft();
   // Day cards
   h += '<div class="day-grid">';
   ["A","B","C"].forEach(function(k) {
     var w = WORKOUTS[k];
     var last = getLastDate(k);
     var lastStr = last ? 'Last: ' + last : 'Not yet started';
+    var hasDraft = draft && draft.dayKey === k;
     h += '<button class="day-card" onclick="startWorkout(\'' + k + '\')">';
     h += '<div class="day-name">' + w.name + '</div>';
     h += '<div class="day-sub">' + w.sub + '</div>';
     h += '<div class="day-count">' + w.exs.length + ' exercises</div>';
-    h += '<div class="day-last">' + lastStr + '</div>';
+    if (hasDraft) {
+      h += '<div class="day-last" style="color:var(--accent);font-weight:700">In Progress \u2014 Tap to Resume</div>';
+    } else {
+      h += '<div class="day-last">' + lastStr + '</div>';
+    }
     h += '</button>';
   });
   h += '</div>';
@@ -1180,14 +1273,14 @@ function renderHistoryTab() {
   for (var i = hist.length - 1; i >= 0; i--) {
     var entry = hist[i];
     var w = WORKOUTS[entry.day];
-    h += '<div class="hist-card">';
+    h += '<div class="hist-card" style="cursor:pointer" onclick="editEntry(' + i + ')">';
     h += '<div class="hist-left">';
     h += '<div class="hist-day">' + w.name + ' \u2014 ' + w.sub + '</div>';
     h += '<div class="hist-date">' + entry.date + (entry.duration ? ' &bull; ' + entry.duration : '') + (entry.warmup ? ' &bull; WU: ' + entry.warmup.substring(0, 30) : '') + '</div>';
     h += '</div>';
     h += '<div class="hist-right">';
     if (entry.notes) h += '<div class="hist-stat" style="max-width:200px;text-align:right">' + entry.notes.substring(0, 60) + (entry.notes.length > 60 ? '...' : '') + '</div>';
-    h += '<div class="hist-del" onclick="deleteEntry(' + i + ')">delete</div>';
+    h += '<div class="hist-del" onclick="event.stopPropagation();deleteEntry(' + i + ')">delete</div>';
     h += '</div>';
     h += '</div>';
   }
@@ -1300,6 +1393,7 @@ function toggleSwapPicker(key, ei) {
 }
 
 function selectSwap(key, ei, altIdx) {
+  if (currentWorkoutKey) saveDraft(key);
   var swapKey = key + '-' + ei;
   if (altIdx === -1) {
     delete activeSwaps[swapKey];
@@ -1317,6 +1411,7 @@ function toggleWarmupTimer() {
     warmupTimer = null;
     btn.className = 'warmup-timer-btn done';
     btn.textContent = fmtElapsed(warmupSeconds);
+    if (currentWorkoutKey) saveDraft(currentWorkoutKey);
   } else {
     warmupSeconds = 0;
     btn.className = 'warmup-timer-btn active';
@@ -1329,9 +1424,37 @@ function toggleWarmupTimer() {
   }
 }
 
-function startWorkout(key) {
+function discardWorkout() {
+  if (!confirm('Discard this workout? Your progress will be lost.')) return;
+  clearDraft();
+  currentWorkoutKey = null;
   clearAllTimers();
-  sessionStart = Date.now();
+  currentTab = 'workout';
+  renderHome();
+}
+
+function startWorkout(key) {
+  var draft = loadDraft();
+  var isRerender = currentWorkoutKey === key;
+  var isResume = !isRerender && draft && draft.dayKey === key;
+
+  // Warn if switching days with an existing draft
+  if (!isRerender && !isResume && draft && draft.dayKey !== key) {
+    if (!confirm('You have an unsaved ' + WORKOUTS[draft.dayKey].name + ' workout. Starting ' + WORKOUTS[key].name + ' will discard it. Continue?')) return;
+    clearDraft();
+  }
+
+  clearAllTimers();
+
+  if (isResume) {
+    sessionStart = draft.sessionStart;
+    activeSwaps = draft.activeSwaps || {};
+    warmupSeconds = draft.warmupSeconds || 0;
+  } else if (!isRerender) {
+    sessionStart = Date.now();
+  }
+
+  currentWorkoutKey = key;
   var w = WORKOUTS[key];
   var h = '';
 
@@ -1431,7 +1554,7 @@ function startWorkout(key) {
 
   // Save bar
   h += '<div class="save-bar">';
-  h += '<button class="save-btn secondary" onclick="showHome()">Discard</button>';
+  h += '<button class="save-btn secondary" onclick="discardWorkout()">Discard</button>';
   h += '<button class="save-btn primary" onclick="saveWorkout(\'' + key + '\')">Save Session \u2713</button>';
   h += '</div>';
 
@@ -1442,7 +1565,15 @@ function startWorkout(key) {
   h += '</div>';
 
   document.getElementById('app').innerHTML = h;
-  window.scrollTo(0, 0);
+
+  // Restore draft values if resuming or re-rendering after swap
+  if (isResume || isRerender) {
+    restoreDraft(draft, key);
+  }
+
+  setupAutosave(key);
+
+  if (!isRerender) window.scrollTo(0, 0);
 
   // Start global session timer
   globalTimer = setInterval(function() {
@@ -1478,6 +1609,7 @@ function toggleCheck(dayKey, ei, si, prefix) {
   } else {
     card.classList.remove('complete');
   }
+  if (currentWorkoutKey) saveDraft(currentWorkoutKey);
 }
 
 function toggleCue(ei) {
@@ -1564,6 +1696,8 @@ function saveWorkout(dayKey) {
   hist.push(entry);
   saveHistory(hist);
 
+  clearDraft();
+  currentWorkoutKey = null;
   clearAllTimers();
   currentTab = 'history';
   renderHome();
@@ -1729,6 +1863,116 @@ function triggerFileImport() {
     reader.readAsText(file);
   };
   input.click();
+}
+
+/* ========================================
+   EDIT HISTORY ENTRY
+   ======================================== */
+function editEntry(idx) {
+  clearAllTimers();
+  currentWorkoutKey = null;
+  var hist = loadHistory();
+  var entry = hist[idx];
+  var w = WORKOUTS[entry.day];
+
+  var h = '';
+  h += '<div class="wo-bar">';
+  h += '<button class="back-btn" onclick="currentTab=\'history\';renderHome()">\u2190 Back</button>';
+  h += '<div class="wo-timer-global">' + entry.date + '</div>';
+  h += '</div>';
+
+  h += '<div class="wo-header">';
+  h += '<div class="wo-name">' + w.name + '</div>';
+  h += '<div class="wo-sub">Edit Session</div>';
+  h += '</div>';
+
+  if (entry.duration) {
+    h += '<div class="section-bar"><div class="section-label">Duration</div>';
+    h += '<div class="section-text">' + entry.duration + '</div></div>';
+  }
+
+  h += '<div class="warmup-card">';
+  h += '<div class="warmup-header"><div class="warmup-label">Warmup</div></div>';
+  h += '<input class="warmup-input" id="edit-warmup" placeholder="Warmup description...">';
+  h += '</div>';
+
+  h += '<div class="ex-grid-ipad">';
+  if (entry.data) {
+    entry.data.forEach(function(exData, ei) {
+      h += '<div class="ex-card">';
+      h += '<div class="ex-top">';
+      h += '<div class="ex-row1"><div class="ex-id">';
+      h += '<span class="ex-num">' + (ei+1) + '</span>';
+      h += '<span class="ex-name">' + exData.exercise + '</span>';
+      h += '</div></div></div>';
+
+      h += '<div class="sets-grid">';
+      h += '<div class="sets-head">';
+      h += '<div class="sh-set">Set</div>';
+      h += '<div class="sh-wt corey">Weight</div>';
+      h += '</div>';
+
+      exData.sets.forEach(function(set, si) {
+        h += '<div class="set-row">';
+        h += '<div class="sr-num">' + (si+1) + '</div>';
+        h += '<input class="sr-input corey" id="edit-w-' + ei + '-' + si + '" inputmode="numeric">';
+        h += '</div>';
+      });
+      h += '</div></div>';
+    });
+  }
+  h += '</div>';
+
+  h += '<div class="notes-section">';
+  h += '<div class="notes-label">Session Notes</div>';
+  h += '<textarea class="notes-input" id="edit-notes" placeholder="Session notes..."></textarea>';
+  h += '</div>';
+
+  h += '<div class="save-bar">';
+  h += '<button class="save-btn secondary" onclick="currentTab=\'history\';renderHome()">Cancel</button>';
+  h += '<button class="save-btn primary" onclick="saveEditedEntry(' + idx + ')">Save Changes \u2713</button>';
+  h += '</div>';
+
+  document.getElementById('app').innerHTML = h;
+  window.scrollTo(0, 0);
+
+  // Fill in saved values
+  var warmupEl = document.getElementById('edit-warmup');
+  if (warmupEl && entry.warmup) warmupEl.value = entry.warmup;
+  var notesEl = document.getElementById('edit-notes');
+  if (notesEl && entry.notes) notesEl.value = entry.notes;
+  if (entry.data) {
+    entry.data.forEach(function(exData, ei) {
+      exData.sets.forEach(function(set, si) {
+        var el = document.getElementById('edit-w-' + ei + '-' + si);
+        if (el && set.weight) el.value = set.weight;
+      });
+    });
+  }
+}
+
+function saveEditedEntry(idx) {
+  var hist = loadHistory();
+  var entry = hist[idx];
+
+  var warmupEl = document.getElementById('edit-warmup');
+  if (warmupEl) entry.warmup = warmupEl.value;
+  var notesEl = document.getElementById('edit-notes');
+  if (notesEl) entry.notes = notesEl.value;
+
+  if (entry.data) {
+    entry.data.forEach(function(exData, ei) {
+      exData.sets.forEach(function(set, si) {
+        var el = document.getElementById('edit-w-' + ei + '-' + si);
+        if (el) set.weight = el.value;
+      });
+    });
+  }
+
+  hist[idx] = entry;
+  saveHistory(hist);
+  currentTab = 'history';
+  renderHome();
 }
 
 /* ========================================
